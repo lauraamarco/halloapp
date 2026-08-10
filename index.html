@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <title>Hallo - Nederlands Oefenen</title>
+
+  <!-- iOS / PWA Meta & App Icon Setup -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Hallo">
+  <meta name="theme-color" content="#FAF6F0">
+  
+  <!-- Embedded SVG Apple Touch Icon (#FF8A65 background with elegant 'Hallo' typography) -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><rect width='100%' height='100%' rx='40' fill='%23FF8A65'/><text x='50%' y='54%' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif' font-weight='700' font-size='42' fill='%23FFFFFF' text-anchor='middle' dominant-baseline='middle'>Hallo</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><rect width='100%' height='100%' rx='8' fill='%23FF8A65'/><text x='50%' y='55%' font-family='sans-serif' font-weight='bold' font-size='14' fill='%23FFFFFF' text-anchor='middle' dominant-baseline='middle'>H</text></svg>">
+
+  <style>
+    /* ==========================================================================
+       THEME & DESIGN SYSTEM (Minimalist Warm Pastel Palette & Safe Areas)
+       ========================================================================== */
+    :root {
+      --bg-main: #FAF6F0;
+      --card-bg: #FFFFFF;
+      --accent-terracotta: #FF8A65;
+      --accent-warm-orange: #FFB74D;
+      --accent-soft-coral: #EF5350;
+      --text-dark: #2D3748;
+      --text-muted: #718096;
+      --border-color: #E2DDD5;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.06);
+      --radius-card: 16px;
+      --radius-btn: 12px;
+      --transition-speed: 0.3s;
+      
+      /* Safe area insets for iOS 18+ (iPhone 13 Mini target optimized) */
+      --sat: env(safe-area-inset-top, 0px);
+      --sab: env(safe-area-inset-bottom, 0px);
+      --sal: env(safe-area-inset-left, 0px);
+      --sar: env(safe-area-inset-right, 0px);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding-top: var(--sat);
+      padding-bottom: var(--sab);
+      padding-left: var(--sal);
+      padding-right: var(--sar);
+    }
+
+    /* Screen Management Layout */
+    .screen {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px 20px;
+      height: calc(100vh - var(--sat) - var(--sab));
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    /* Typography */
+    h1 { font-size: 24px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; }
+    h2 { font-size: 18px; font-weight: 600; color: var(--text-dark); margin-bottom: 12px; }
+    h3 { font-size: 15px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
+    p { font-size: 15px; line-height: 1.5; color: var(--text-dark); }
+
+    /* Button System */
+    .btn {
+      min-height: 48px; /* Touch target optimized */
+      padding: 12px 20px;
+      border-radius: var(--radius-btn);
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all var(--transition-speed) ease;
+      text-decoration: none;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-terracotta), var(--accent-warm-orange));
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(255, 138, 101, 0.3);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 6px rgba(255, 138, 101, 0.2);
+    }
+
+    .btn-secondary {
+      background: #FFFFFF;
+      color: var(--text-dark);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-secondary:active {
+      background: #F7F3EE;
+    }
+
+    .btn-danger {
+      background: var(--accent-soft-coral);
+      color: white;
+    }
+
+    .btn-icon {
+      min-height: 44px;
+      width: 44px;
+      border-radius: 50%;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    /* Screen 1: Splash Screen */
+    #screen-splash {
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      padding-top: 60px;
+      padding-bottom: 40px;
+    }
+
+    .splash-logo {
+      width: 100px;
+      height: 100px;
+      background: var(--accent-terracotta);
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 32px;
+      font-weight: bold;
+      box-shadow: 0 12px 28px rgba(255, 138, 101, 0.35);
+      margin-bottom: 24px;
+    }
+
+    .splash-swipe-prompt {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-muted);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(-6px); }
+    }
+
+    /* Header Navigation Bar */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      min-height: 44px;
+    }
+
+    .app-header h2 {
+      margin: 0;
+      flex: 1;
+      text-align: center;
+    }
+
+    /* Screen 2: Main Menu */
+    .menu-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .menu-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-card);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .menu-card:active {
+      transform: scale(0.99);
+      box-shadow: var(--shadow-md);
+    }
+
+    .menu-card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: #FFF3E0;
+      color: var(--accent-terracotta);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .menu-card-info h3 {
+      color: var(--text-dark);
+      margin-bottom: 2px;
+    }
+
+    .menu-card-info p {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* Vocab Multi-Select Filters */
+    .filter-section {
+      background: var(--card-bg);
+      border-radius: var(--radius-card);
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-color);
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent-terracotta);
+      border-radius: 4px;
+    }
+
+    select.form-control {
+      width: 100%;
+      min-height: 44px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      padding: 0 12px;
+      font-size: 15px;
+      background: var(--card-bg);
+      color: var(--text-dark);
+    }
+
+    /* Flashcard Screen & 3D Y-Axis Flip Animation */
+    .flashcard-container {
+      perspective: 1000px;
+      width: 100%;
+      height: 380px;
+      margin: 16px 0;
+    }
+
+    .flashcard {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
+      cursor: pointer;
+    }
+
+    .flashcard.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: var(--radius-card);
+      padding: 24px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-y: auto;
+    }
+
+    .card-face.back {
+      transform: rotateY(180deg);
+      background: #FFFDF9;
+    }
+
+    .card-badge {
+      align-self: flex-start;
+      background: #FFF0EB;
+      color: var(--accent-terracotta);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card-main-text {
+      font-size: 26px;
+      font-weight: 700;
+      text-align: center;
+      margin: auto 0;
+      color: var(--text-dark);
+      line-height: 1.3;
+    }
+
+    .card-sub-text {
+      font-size: 18px;
+      color: var(--accent-terracotta);
+      text-align: center;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .card-examples {
+      background: #FAF6F0;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .card-examples div {
+      margin-bottom: 4px;
+    }
+
+    .card-examples .nl { font-weight: 600; color: var(--text-dark); }
+    .card-examples .en { color: var(--text-muted); font-style: italic; }
+
+    .card-notes {
+      font-size: 13px;
+      color: var(--text-muted);
+      border-top: 1px dashed var(--border-color);
+      padding-top: 8px;
+    }
+
+    .card-notes a {
+      color: var(--accent-terracotta);
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    .flashcard-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    /* Grammatica View */
+    .search-box {
+      margin-bottom: 16px;
+    }
+
+    .search-input {
+      width: 100%;
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: var(--radius-btn);
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      font-size: 15px;
+      outline: none;
+    }
+
+    .doc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .doc-item {
+      background: var(--card-bg);
+      padding: 16px;
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .doc-item:active {
+      background: #F7F3EE;
+    }
+
+    .doc-content {
+      background: var(--card-bg);
+      border-radius: var(--radius-card);
+      padding: 20px;
+      border: 1px solid var(--border-color);
+      line-height: 1.6;
+      overflow-y: auto;
+    }
+
+    .doc-content h1, .doc-content h2, .doc-content h3 {
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+
+    .doc-content p { margin-bottom: 12px; }
+    .doc-content ul { margin-left: 20px; margin-bottom: 12px; }
+
+    /* Inter-app Return Floating Button */
+    #return-to-flashcards-btn {
+      position: fixed;
+      bottom: calc(var(--sab) + 20px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 40px);
+      max-width: 440px;
+      z-index: 100;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Import View Sections */
+    .import-section {
+      background: var(--card-bg);
+      border-radius: var(--radius-card);
+      padding: 16px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 16px;
+    }
+
+    .file-input-wrapper {
+      position: relative;
+      margin-top: 10px;
+    }
+
+    .file-input-wrapper input[type="file"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      top: calc(var(--sat) + 16px);
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: var(--text-dark);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toast Element -->
+  <div id="toast" class="toast">Bericht</div>
+
+  <!-- Floating Inter-App Return Button -->
+  <button id="return-to-flashcards-btn" class="btn btn-primary" style="display: none;">
+    ← Terug naar Flashcards
+  </button>
+
+  <!-- SCREEN 1: SPLASH SCREEN -->
+  <section id="screen-splash" class="screen active">
+    <div style="flex:1;"></div>
+    <div style="display:flex; flex-direction:column; align-items:center;">
+      <div class="splash-logo">H</div>
+      <h1>Hallo</h1>
+      <p style="color: var(--text-muted); max-width: 260px; margin-top: 8px;">
+        Je persoonlijke Nederlandse taal & grammatica buddy.
+      </p>
+    </div>
+    <div style="flex:1;"></div>
+    <div class="splash-swipe-prompt" id="splash-trigger">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
+      <span>Veeg omhoog om Nederlands te oefenen</span>
+    </div>
+  </section>
+
+  <!-- SCREEN 2: MAIN MENU -->
+  <section id="screen-menu" class="screen">
+    <div class="app-header">
+      <h1>Hallo</h1>
+    </div>
+    <h2>Wat wil je vandaag oefenen?</h2>
+    
+    <div class="menu-grid">
+      <div class="menu-card" onclick="app.navigateTo('filter')">
+        <div class="menu-card-icon">🂠</div>
+        <div class="menu-card-info">
+          <h3>Vocabulaire</h3>
+          <p>Oefen woorden & zinnen met flashcards</p>
+        </div>
+      </div>
+
+      <div class="menu-card" onclick="app.navigateTo('grammar')">
+        <div class="menu-card-icon">📖</div>
+        <div class="menu-card-info">
+          <h3>Grammatica en overige</h3>
+          <p>Lees en doorzoek grammaticalogboeken</p>
+        </div>
+      </div>
+
+      <div class="menu-card" onclick="app.navigateTo('import')">
+        <div class="menu-card-icon">📥</div>
+        <div class="menu-card-info">
+          <h3>Import</h3>
+          <p>Voeg CSV, Markdown of Backups toe</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 3: VOCAB FILTER SCREEN -->
+  <section id="screen-filter" class="screen">
+    <div class="app-header">
+      <button class="btn btn-secondary btn-icon" onclick="app.navigateTo('menu')">←</button>
+      <h2>Vocabulaire Filter</h2>
+      <div style="width: 44px;"></div>
+    </div>
+
+    <div class="filter-section">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <h3>Hoofdcategorieën</h3>
+        <label class="checkbox-label" style="font-size: 13px; color: var(--accent-terracotta);">
+          <input type="checkbox" id="toggle-all-cats" checked onchange="app.toggleAllCategories(this.checked)"> Alles
+        </label>
+      </div>
+      <div class="filter-group" id="main-cats-list">
+        <!-- Dynamically Populated -->
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <h3>Subcategorieën</h3>
+      <div class="filter-group" id="sub-cats-list">
+        <!-- Dynamically Populated -->
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <h3>Recentie Quick Filter</h3>
+      <select class="form-control" id="recency-filter">
+        <option value="all">Alle Kaarten</option>
+        <option value="last_import">Laatste CSV Import</option>
+        <option value="7days">Laatste 7 Dagen</option>
+        <option value="2weeks">Laatste 2 Weken</option>
+        <option value="1month">Laatste Maand</option>
+        <option value="6months">Laatste 6 Maanden</option>
+      </select>
+    </div>
+
+    <button class="btn btn-primary" onclick="app.startPractice()" style="margin-top: auto;">
+      Start Oefenen
+    </button>
+  </section>
+
+  <!-- SCREEN 4: FLASHCARD GAME -->
+  <section id="screen-flashcard" class="screen">
+    <div class="app-header">
+      <button class="btn btn-secondary btn-icon" onclick="app.navigateTo('filter')">←</button>
+      <span id="card-progress" style="font-weight: 600; font-size: 14px; color: var(--text-muted);">0 / 0</span>
+      <button class="btn btn-secondary btn-icon" onclick="app.shuffleDeck()">🔀</button>
+    </div>
+
+    <div class="flashcard-container" id="flashcard-container">
+      <div class="flashcard" id="flashcard" onclick="app.flipCard()">
+        <!-- Front -->
+        <div class="card-face front">
+          <div class="card-badge" id="card-cat-front">Categorie</div>
+          <div class="card-main-text" id="card-word">Woord / Zin</div>
+          <p style="text-align: center; color: var(--text-muted); font-size: 12px;">Tik om te draaien</p>
+        </div>
+        <!-- Back -->
+        <div class="card-face back">
+          <div>
+            <div class="card-badge" id="card-cat-back" style="margin-bottom: 8px;">Categorie</div>
+            <div class="card-sub-text" id="card-translation">Vertaling</div>
+          </div>
+          <div class="card-examples" id="card-examples-box">
+            <div class="nl" id="card-ex-nl"></div>
+            <div class="en" id="card-ex-en"></div>
+          </div>
+          <div class="card-notes" id="card-notes"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flashcard-controls">
+      <button class="btn btn-secondary" onclick="app.prevCard()">Vorige</button>
+      <button class="btn btn-primary" onclick="app.nextCard()">Volgende</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 5: GRAMMATICA READER -->
+  <section id="screen-grammar" class="screen">
+    <div class="app-header">
+      <button class="btn btn-secondary btn-icon" id="grammar-back-btn" onclick="app.navigateTo('menu')">←</button>
+      <h2>Grammatica</h2>
+      <div style="width: 44px;"></div>
+    </div>
+
+    <div class="search-box">
+      <input type="text" class="search-input" id="grammar-search" placeholder="Zoek op titel of inhoud..." oninput="app.filterDocs(this.value)">
+    </div>
+
+    <div id="doc-list-view">
+      <div class="doc-list" id="doc-list">
+        <!-- Dynamically Populated -->
+      </div>
+    </div>
+
+    <div id="doc-detail-view" style="display: none; flex: 1; flex-direction: column;">
+      <button class="btn btn-secondary" onclick="app.closeDocDetail()" style="margin-bottom: 12px; align-self: flex-start; width: auto; min-height: 36px; padding: 6px 12px; font-size: 13px;">
+        ← Overzicht
+      </button>
+      <div class="doc-content" id="doc-body">
+        <!-- Markdown rendered content -->
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 6: IMPORT & BACKUP -->
+  <section id="screen-import" class="screen">
+    <div class="app-header">
+      <button class="btn btn-secondary btn-icon" onclick="app.navigateTo('menu')">←</button>
+      <h2>Import & Backup</h2>
+      <div style="width: 44px;"></div>
+    </div>
+
+    <!-- Section 1: CSV Import -->
+    <div class="import-section">
+      <h3>1. Vocabulaire Importeren (.csv)</h3>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">
+        7 Kolommen: <i>Main Category, Subcategory, Word/Sentence, Translation, NL Example, EN Example, Notes</i>
+      </p>
+      <div class="file-input-wrapper">
+        <button class="btn btn-secondary">Selecteer CSV Bestand</button>
+        <input type="file" accept=".csv" onchange="app.importCSV(event)">
+      </div>
+    </div>
+
+    <!-- Section 2: Grammar MD Import -->
+    <div class="import-section">
+      <h3>2. Grammatica Importeren (.md / .txt)</h3>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">
+        Upload Markdown of tekstbestanden voor grammaticale uitleg.
+      </p>
+      <div class="file-input-wrapper">
+        <button class="btn btn-secondary">Selecteer MD/TXT Bestand</button>
+        <input type="file" accept=".md,.txt" onchange="app.importGrammarDoc(event)">
+      </div>
+    </div>
+
+    <!-- Section 3: Backup & Herstel -->
+    <div class="import-section">
+      <h3>3. Backup & Herstel (.json)</h3>
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+        <button class="btn btn-secondary" onclick="app.exportData()">Exporteer Alle Data (JSON)</button>
+        <div class="file-input-wrapper">
+          <button class="btn btn-danger" style="width: 100%;">Herstel Data uit JSON</button>
+          <input type="file" accept=".json" onchange="app.restoreData(event)">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JAVASCRIPT APP LOGIC & OFFLINE ENGINE -->
+  <script>
+    /* ==========================================================================
+       APP ENGINE & LOCALSTORAGE PERSISTENCE
+       ========================================================================== */
+    class HalloApp {
+      constructor() {
+        this.cards = [];
+        this.docs = [];
+        this.activeDeck = [];
+        this.currentCardIndex = 0;
+        this.lastImportDate = null;
+        this.previousStateBeforeDocJump = null;
+        this.touchStartY = 0;
+        this.touchStartX = 0;
+
+        this.init();
+      }
+
+      init() {
+        this.loadData();
+        this.setupEventListeners();
+        this.registerServiceWorker();
+      }
+
+      showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+      }
+
+      /* Data Loading & Default Seed Setup */
+      loadData() {
+        const storedCards = localStorage.getItem('hallo_vocab');
+        const storedDocs = localStorage.getItem('hallo_docs');
+        this.lastImportDate = localStorage.getItem('hallo_last_import');
+
+        if (storedCards) {
+          this.cards = JSON.parse(storedCards);
+        } else {
+          // Default seed vocabulary
+          this.cards = [
+            {
+              id: '1',
+              mainCat: 'Basis',
+              subCat: 'Begroetingen',
+              word: 'Goedemorgen',
+              translation: 'Good morning',
+              nlExample: 'Goedemorgen, hoe gaat het met u?',
+              enExample: 'Good morning, how are you?',
+              notes: 'Formele begroeting. Zie <a href="#doc-1">Begroetingen Gids</a>.',
+              importDate: new Date().toISOString()
+            },
+            {
+              id: '2',
+              mainCat: 'Grammatica',
+              subCat: 'Lidwoorden',
+              word: 'De / Het',
+              translation: 'The (Definite Articles)',
+              nlExample: 'De man, het huis.',
+              enExample: 'The man, the house.',
+              notes: 'Lees meer in de <a href="#doc-2">De vs Het Regels</a>.',
+              importDate: new Date().toISOString()
+            }
+          ];
+          this.saveCards();
+        }
+
+        if (storedDocs) {
+          this.docs = JSON.parse(storedDocs);
+        } else {
+          // Default seed docs
+          this.docs = [
+            {
+              id: 'doc-1',
+              title: 'Begroetingen Gids',
+              content: '# Begroetingen in het Nederlands\n\n- **Goedemorgen**: 06:00 - 12:00\n- **Goedemiddag**: 12:00 - 18:00\n- **Goedenavond**: 18:00 - 24:00',
+              importDate: new Date().toISOString()
+            },
+            {
+              id: 'doc-2',
+              title: 'De vs Het Regels',
+              content: '# De vs Het\n\nIn het Nederlands gebruiken we twee bepaalde lidwoorden: **de** en **het**.\n\n### Het-woorden:\n- Alle verkleinwoorden (het tafeltje)\n- Alle het-woorden in het meervoud worden **de** (de tafels)',
+              importDate: new Date().toISOString()
+            }
+          ];
+          this.saveDocs();
+        }
+      }
+
+      saveCards() {
+        localStorage.setItem('hallo_vocab', JSON.stringify(this.cards));
+      }
+
+      saveDocs() {
+        localStorage.setItem('hallo_docs', JSON.stringify(this.docs));
+      }
+
+      /* Navigation System */
+      navigateTo(screenName) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        const target = document.getElementById(`screen-${screenName}`);
+        if (target) target.classList.add('active');
+
+        if (screenName === 'filter') this.renderFilters();
+        if (screenName === 'grammar') this.renderDocList();
+      }
+
+      /* Splash Screen Touch Gestures */
+      setupEventListeners() {
+        const splash = document.getElementById('screen-splash');
+        
+        splash.addEventListener('touchstart', e => {
+          this.touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        splash.addEventListener('touchend', e => {
+          const deltaY = e.changedTouches[0].clientY - this.touchStartY;
+          if (deltaY < -50) { // Swipe Up
+            this.navigateTo('menu');
+          }
+        }, { passive: true });
+
+        splash.addEventListener('click', () => this.navigateTo('menu'));
+
+        // Flashcard Swipe Gestures
+        const cardContainer = document.getElementById('flashcard-container');
+        cardContainer.addEventListener('touchstart', e => {
+          this.touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+
+        cardContainer.addEventListener('touchend', e => {
+          const deltaX = e.changedTouches[0].clientX - this.touchStartX;
+          if (deltaX < -50) this.nextCard();
+          if (deltaX > 50) this.prevCard();
+        }, { passive: true });
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', e => {
+          const flashcardScreen = document.getElementById('screen-flashcard');
+          if (flashcardScreen.classList.contains('active')) {
+            if (e.code === 'Space') {
+              e.preventDefault();
+              this.flipCard();
+            } else if (e.code === 'ArrowRight') {
+              this.nextCard();
+            } else if (e.code === 'ArrowLeft') {
+              this.prevCard();
+            }
+          }
+        });
+
+        // Inter-App Return Floating Button
+        document.getElementById('return-to-flashcards-btn').addEventListener('click', () => {
+          document.getElementById('return-to-flashcards-btn').style.display = 'none';
+          this.navigateTo('flashcard');
+        });
+      }
+
+      /* Vocab Filter Logic */
+      renderFilters() {
+        const mainCatsContainer = document.getElementById('main-cats-list');
+        const subCatsContainer = document.getElementById('sub-cats-list');
+
+        const mainCats = [...new Set(this.cards.map(c => c.mainCat || 'Algemeen'))];
+        const subCats = [...new Set(this.cards.map(c => c.subCat || 'Algemeen'))];
+
+        mainCatsContainer.innerHTML = mainCats.map(cat => `
+          <label class="checkbox-label">
+            <input type="checkbox" class="cat-checkbox" value="${cat}" checked> ${cat}
+          </label>
+        `).join('');
+
+        subCatsContainer.innerHTML = subCats.map(sub => `
+          <label class="checkbox-label">
+            <input type="checkbox" class="subcat-checkbox" value="${sub}" checked> ${sub}
+          </label>
+        `).join('');
+      }
+
+      toggleAllCategories(checked) {
+        document.querySelectorAll('.cat-checkbox, .subcat-checkbox').forEach(cb => cb.checked = checked);
+      }
+
+      startPractice() {
+        const selectedMain = Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(cb => cb.value);
+        const selectedSub = Array.from(document.querySelectorAll('.subcat-checkbox:checked')).map(cb => cb.value);
+        const recency = document.getElementById('recency-filter').value;
+
+        const now = new Date().getTime();
+
+        this.activeDeck = this.cards.filter(card => {
+          const matchMain = selectedMain.includes(card.mainCat || 'Algemeen');
+          const matchSub = selectedSub.includes(card.subCat || 'Algemeen');
+
+          let matchRecency = true;
+          if (recency === 'last_import') {
+            matchRecency = card.importDate === this.lastImportDate;
+          } else if (recency !== 'all' && card.importDate) {
+            const cardDate = new Date(card.importDate).getTime();
+            const daysDiff = (now - cardDate) / (1000 * 3600 * 24);
+            if (recency === '7days') matchRecency = daysDiff <= 7;
+            else if (recency === '2weeks') matchRecency = daysDiff <= 14;
+            else if (recency === '1month') matchRecency = daysDiff <= 30;
+            else if (recency === '6months') matchRecency = daysDiff <= 180;
+          }
+
+          return matchMain && matchSub && matchRecency;
+        });
+
+        if (this.activeDeck.length === 0) {
+          this.showToast('Geen kaarten gevonden met deze filters!');
+          return;
+        }
+
+        this.shuffleDeck();
+        this.navigateTo('flashcard');
+      }
+
+      /* Fisher-Yates Shuffle Algorithm */
+      shuffleDeck() {
+        for (let i = this.activeDeck.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [this.activeDeck[i], this.activeDeck[j]] = [this.activeDeck[j], this.activeDeck[i]];
+        }
+        this.currentCardIndex = 0;
+        this.renderCard();
+        this.showToast('Deck geschud!');
+      }
+
+      renderCard() {
+        if (this.activeDeck.length === 0) return;
+
+        const card = this.activeDeck[this.currentCardIndex];
+        const cardElem = document.getElementById('flashcard');
+        cardElem.classList.remove('flipped');
+
+        document.getElementById('card-progress').textContent = `${this.currentCardIndex + 1} / ${this.activeDeck.length}`;
+        document.getElementById('card-cat-front').textContent = card.mainCat || 'Algemeen';
+        document.getElementById('card-cat-back').textContent = `${card.mainCat || ''} > ${card.subCat || ''}`;
+        
+        document.getElementById('card-word').textContent = card.word;
+        document.getElementById('card-translation').textContent = card.translation;
+
+        document.getElementById('card-ex-nl').textContent = card.nlExample || '';
+        document.getElementById('card-ex-en').textContent = card.enExample || '';
+        
+        const notesBox = document.getElementById('card-notes');
+        notesBox.innerHTML = card.notes || '';
+
+        // Bind inner inter-app links in notes
+        notesBox.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            if (href && href.startsWith('#doc-')) {
+              e.preventDefault();
+              const docId = href.substring(1);
+              this.openGrammarDocFromCard(docId);
+            }
+          });
+        });
+      }
+
+      flipCard() {
+        document.getElementById('flashcard').classList.toggle('flipped');
+      }
+
+      nextCard() {
+        if (this.currentCardIndex < this.activeDeck.length - 1) {
+          this.currentCardIndex++;
+          this.renderCard();
+        } else {
+          this.showToast('Einde van de stapel bereikt!');
+        }
+      }
+
+      prevCard() {
+        if (this.currentCardIndex > 0) {
+          this.currentCardIndex--;
+          this.renderCard();
+        }
+      }
+
+      /* Grammatica Reader & Markdown Renderer */
+      renderDocList(filteredDocs = null) {
+        const listContainer = document.getElementById('doc-list');
+        const docsToRender = filteredDocs || this.docs;
+
+        if (docsToRender.length === 0) {
+          listContainer.innerHTML = '<p style="color:var(--text-muted);">Geen documenten gevonden.</p>';
+          return;
+        }
+
+        listContainer.innerHTML = docsToRender.map(doc => `
+          <div class="doc-item" onclick="app.openDocDetail('${doc.id}')">
+            <h3>${doc.title}</h3>
+            <p style="font-size:13px; color:var(--text-muted);">${doc.content.substring(0, 80).replace(/[#*]/g, '')}...</p>
+          </div>
+        `).join('');
+      }
+
+      filterDocs(query) {
+        const q = query.toLowerCase();
+        const filtered = this.docs.filter(d => d.title.toLowerCase().includes(q) || d.content.toLowerCase().includes(q));
+        this.renderDocList(filtered);
+      }
+
+      openDocDetail(docId) {
+        const doc = this.docs.find(d => d.id === docId);
+        if (!doc) return;
+
+        document.getElementById('doc-list-view').style.display = 'none';
+        const detailView = document.getElementById('doc-detail-view');
+        detailView.style.display = 'flex';
+
+        document.getElementById('doc-body').innerHTML = this.parseMarkdown(doc.content);
+      }
+
+      closeDocDetail() {
+        document.getElementById('doc-detail-view').style.display = 'none';
+        document.getElementById('doc-list-view').style.display = 'block';
+      }
+
+      openGrammarDocFromCard(docId) {
+        document.getElementById('return-to-flashcards-btn').style.display = 'flex';
+        this.navigateTo('grammar');
+        this.openDocDetail(docId);
+      }
+
+      parseMarkdown(md) {
+        if (!md) return '';
+        let html = md
+          .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+          .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+          .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+          .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+          .replace(/\*(.*?)\*/gim, '<em>$1</em>')
+          .replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2">$1</a>')
+          .replace(/^\- (.*$)/gim, '<li>$1</li>')
+          .replace(/\n\n/gim, '</p><p>')
+          .replace(/\n/gim, '<br />');
+        return '<p>' + html + '</p>';
+      }
+
+      /* Smart Upsert CSV Import Engine */
+      importCSV(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const text = e.target.result;
+          const rows = this.parseCSVText(text);
+          const importTimestamp = new Date().toISOString();
+          let countUpdated = 0;
+          let countInserted = 0;
+
+          rows.forEach((row, idx) => {
+            if (idx === 0 && row[2] && row[2].toLowerCase().includes('word')) return; // Header skip
+            if (row.length < 3 || !row[2]) return;
+
+            const [mainCat, subCat, word, translation, nlExample, enExample, notes] = row;
+            const primaryKey = word.trim().toLowerCase();
+
+            const existingIndex = this.cards.findIndex(c => c.word.trim().toLowerCase() === primaryKey);
+
+            const cardData = {
+              id: existingIndex >= 0 ? this.cards[existingIndex].id : 'card-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+              mainCat: mainCat ? mainCat.trim() : 'Algemeen',
+              subCat: subCat ? subCat.trim() : 'Algemeen',
+              word: word.trim(),
+              translation: translation ? translation.trim() : '',
+              nlExample: nlExample ? nlExample.trim() : '',
+              enExample: enExample ? enExample.trim() : '',
+              notes: notes ? notes.trim() : '',
+              importDate: importTimestamp
+            };
+
+            if (existingIndex >= 0) {
+              this.cards[existingIndex] = cardData;
+              countUpdated++;
+            } else {
+              this.cards.push(cardData);
+              countInserted++;
+            }
+          });
+
+          this.lastImportDate = importTimestamp;
+          localStorage.setItem('hallo_last_import', importTimestamp);
+          this.saveCards();
+          this.showToast(`Import voltooid! (${countInserted} nieuw, ${countUpdated} bijgewerkt)`);
+          event.target.value = '';
+        };
+        reader.readAsText(file);
+      }
+
+      parseCSVText(text) {
+        let lines = [];
+        let row = [''];
+        let inQuotes = false;
+        for (let i = 0; i < text.length; i++) {
+          let c = text[i];
+          let nextC = text[i+1];
+          if (c === '"') {
+            if (inQuotes && nextC === '"') { row[row.length - 1] += '"'; i++; }
+            else { inQuotes = !inQuotes; }
+          } else if (c === ',' && !inQuotes) {
+            row.push('');
+          } else if ((c === '\r' || c === '\n') && !inQuotes) {
+            if (c === '\r' && nextC === '\n') { i++; }
+            lines.push(row);
+            row = [''];
+          } else {
+            row[row.length - 1] += c;
+          }
+        }
+        if (row.length > 1 || row[0] !== '') lines.push(row);
+        return lines;
+      }
+
+      importGrammarDoc(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const content = e.target.result;
+          const title = file.name.replace(/\.(md|txt)$/i, '');
+          const docId = 'doc-' + Date.now();
+
+          this.docs.push({
+            id: docId,
+            title: title,
+            content: content,
+            importDate: new Date().toISOString()
+          });
+
+          this.saveDocs();
+          this.showToast('Grammatica document geïmporteerd!');
+          event.target.value = '';
+        };
+        reader.readAsText(file);
+      }
+
+      exportData() {
+        const data = {
+          vocab: this.cards,
+          docs: this.docs,
+          lastImportDate: this.lastImportDate,
+          exportDate: new Date().toISOString()
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `hallo_backup_${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      restoreData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const data = JSON.parse(e.target.result);
+            if (data.vocab && data.docs) {
+              this.cards = data.vocab;
+              this.docs = data.docs;
+              this.lastImportDate = data.lastImportDate || null;
+              this.saveCards();
+              this.saveDocs();
+              if (this.lastImportDate) localStorage.setItem('hallo_last_import', this.lastImportDate);
+              this.showToast('Data succesvol hersteld!');
+            } else {
+              this.showToast('Ongeldig backup bestand.');
+            }
+          } catch (err) {
+            this.showToast('Fout bij lezen van JSON.');
+          }
+          event.target.value = '';
+        };
+        reader.readAsText(file);
+      }
+
+      /* Offline Service Worker Engine */
+      registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+          const swCode = `
+            const CACHE_NAME = 'hallo-offline-v1';
+            self.addEventListener('install', (e) => {
+              e.waitUntil(
+                caches.open(CACHE_NAME).then((cache) => cache.addAll(['./']))
+              );
+            });
+            self.addEventListener('fetch', (e) => {
+              e.respondWith(
+                caches.match(e.request).then((res) => res || fetch(e.request))
+              );
+            });
+          `;
+          const blob = new Blob([swCode], { type: 'text/javascript' });
+          const blobUrl = URL.createObjectURL(blob);
+          navigator.serviceWorker.register(blobUrl).catch(() => {});
+        }
+      }
+    }
+
+    // Initialize Application
+    const app = new HalloApp();
+  </script>
+</body>
+</html>
