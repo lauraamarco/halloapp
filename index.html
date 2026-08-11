@@ -24,14 +24,12 @@
   <script>
     async function generateIcons() {
       await document.fonts.ready;
-      // Explicitly load font faces before drawing to canvas to guarantee Chrome renders Leckerli One
       try {
         await document.fonts.load('52px "Leckerli One"');
         await document.fonts.load('bold 56px "Leckerli One"');
         await document.fonts.load('600 50px "Elms Sans"');
       } catch(e) { console.warn('Font loading deferred', e); }
       
-      // 1. Chrome Desktop Favicon (Transparent BG, Terracotta 'H' in Leckerli One)
       const favCanvas = document.createElement('canvas');
       favCanvas.width = 64; favCanvas.height = 64;
       const fctx = favCanvas.getContext('2d');
@@ -45,7 +43,6 @@
       const favLink = document.getElementById('app-favicon');
       if (favLink) favLink.href = favCanvas.toDataURL('image/png');
 
-      // 2. iOS Home Screen Icon (Solid Terracotta BG, White "Hallo")
       const appleCanvas = document.createElement('canvas');
       appleCanvas.width = 180; appleCanvas.height = 180;
       const actx = appleCanvas.getContext('2d');
@@ -123,9 +120,9 @@
       width: 100%;
       max-width: 480px;
       margin: 0 auto;
-      padding: 16px 20px;
+      padding: 16px 16px;
       overflow-y: auto;
-      min-height: 0; /* Critical fix for flex scrolling */
+      min-height: 0;
     }
     .screen.active { display: flex; }
     
@@ -221,7 +218,6 @@
       background: #FFFDF9; 
     }
 
-    /* When card is flipped, render back face as relative so container expands to full back content height */
     .flashcard.flipped .card-face.front { position: absolute; top:0; left:0; opacity: 0; }
     .flashcard.flipped .card-face.back { position: relative; opacity: 1; }
     
@@ -271,9 +267,47 @@
     .btn-danger-sm { background: #fee2e2; color: #b91c1c; font-size: 12px; min-height: 32px; padding: 0 10px; border-radius: 8px; width: auto; font-weight: bold; border:none; cursor:pointer;}
     .btn-danger-sm:active { background: #fecaca; }
 
-    .doc-content-view { background: white; border-radius: var(--radius-card); padding: 24px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); line-height: 1.6; text-align: left; margin-bottom: 16px; font-family: 'Elms Sans', sans-serif;}
-    .doc-content-view h1, .doc-content-view h2 { color: var(--accent-terracotta); margin-bottom: 12px; margin-top: 16px;}
-    .doc-content-view p { margin-bottom: 10px; }
+    /* Grammar Reader Container - Wide & Compact Padding */
+    .doc-content-view { 
+      background: white; 
+      border-radius: var(--radius-card); 
+      padding: 16px 14px; 
+      border: 1px solid var(--border-color); 
+      box-shadow: var(--shadow-sm); 
+      line-height: 1.6; 
+      text-align: left; 
+      margin-bottom: 16px; 
+      font-family: 'Elms Sans', sans-serif;
+      overflow-x: hidden;
+      width: 100%;
+    }
+    
+    /* Override Google Docs hardcoded wide margins and padding */
+    .doc-content-view * {
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    .doc-content-view p, 
+    .doc-content-view div, 
+    .doc-content-view span, 
+    .doc-content-view h1, 
+    .doc-content-view h2, 
+    .doc-content-view h3 {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    .doc-content-view ul, .doc-content-view ol {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      padding-left: 20px !important;
+    }
+    .doc-content-view h1, .doc-content-view h2 { 
+      color: var(--accent-terracotta); 
+      margin-bottom: 12px !important; 
+      margin-top: 12px !important;
+    }
 
     .toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #2D3748; color: white; padding: 12px 20px; border-radius: 30px; font-size: 14px; z-index: 3000; transition: transform 0.3s; pointer-events: none; }
     .toast.show { transform: translateX(-50%) translateY(0); }
@@ -384,7 +418,7 @@
   </section>
 
   <!-- SCHERM 5: GRAMMATICA LIJST -->
-  <section id="screen-grammar-list" class="screen">
+  <section id="screen-grammar-list" class="screen" style="padding-left:12px; padding-right:12px;">
     <div class="app-header">
       <button class="btn btn-secondary" style="width:auto; padding: 0 15px;" onclick="app.navigateTo('menu')">←</button>
       <h1 style="font-size: 20px;">Grammatica</h1>
@@ -399,7 +433,7 @@
   </section>
 
   <!-- SCHERM 6: GRAMMATICA LEZER -->
-  <section id="screen-grammar-reader" class="screen">
+  <section id="screen-grammar-reader" class="screen" style="padding-left:8px; padding-right:8px;">
     <div class="app-header">
       <button class="btn btn-secondary" style="width:auto; padding: 0 15px;" onclick="app.navigateTo('grammar-list')">←</button>
       <h1 style="font-size: 20px;" id="grammar-doc-title">Document</h1>
@@ -445,9 +479,9 @@
     </div>
 
     <div style="text-align: left; background:#e0f2fe; padding:16px; border-radius:12px; border:1px solid #0ea5e9; margin-bottom:16px;">
-      <h3 style="color:#0369a1; margin-bottom:8px;">2. Manage Grammar Link (Master GDoc)</h3>
+      <h3 style="color:#0369a1; margin-bottom:8px;">2. Manage Grammar Link</h3>
       <p style="font-size: 13px; color: #0369a1; margin-bottom: 8px;">
-        You can sync 1 Master Google Doc! Separate sections using <strong>Heading 1</strong> in Google Docs or <strong>=== Section Title ===</strong> lines.
+        Add your Google Doc web link below. The app automatically extracts each section title using your <strong>Heading 1</strong> / <strong>Encabezado 1</strong> elements!
       </p>
       <div id="sync-grammar-active-list" style="margin: 12px 0;"></div>
       <button class="btn btn-primary" style="background:#0ea5e9; border:none; height:40px; font-size:14px;" onclick="app.syncAllGrammar()">
@@ -455,8 +489,6 @@
       </button>
        <div style="height:1px; background:var(--border-color); margin: 16px 0;"></div>
       <div style="background:white; padding:16px; border-radius:12px; border:1px solid var(--border-color);">
-        <label>Guide Title (e.g. master-gids)</label>
-        <input type="text" id="add-grammar-name" class="form-control" placeholder="master-gids" style="margin-bottom:10px;">
         <label>GDoc HTML URL ('Publish to web' > Web page)</label>
         <input type="text" id="add-grammar-url" class="form-control" placeholder="https://docs.google.com/document/d/.../pub?output=html" style="margin-bottom:10px;">
         <button class="btn btn-secondary" style="width:100%; height:40px; font-size:14px; font-weight:bold;" onclick="app.addGrammarSyncLink()">Add Grammar Link</button>
@@ -488,7 +520,6 @@
         this.activeDeck = [];
         this.currentIndex = 0;
         
-        // Touch & Mouse Drag state
         this.startX = 0;
         this.isDragging = false;
         this.dragDistance = 0;
@@ -558,7 +589,7 @@
              const statusText = c.lastSync ? `🟢 Synced on ${c.lastSync}` : '🔴 Not synced';
              return `
               <div class="sync-list-item">
-                <div class="sync-list-header"><strong>${c.title}</strong><button class="btn-danger-sm" onclick="app.removeGrammarLink(${i})">X</button></div>
+                <div class="sync-list-header"><strong>Google Doc Link #${i + 1}</strong><button class="btn-danger-sm" onclick="app.removeGrammarLink(${i})">X</button></div>
                 <p style="font-size:11px; color:var(--text-muted); text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${c.url}</p>
                 <div class="sync-status ${statusClass}">${statusText}</div>
               </div>
@@ -579,16 +610,14 @@
       removeVocabLink(i) { if(confirm(`Remove Vocab link '${this.vocabSyncs[i].name}'?`)){ this.vocabSyncs.splice(i, 1); this.save(); this.renderSyncManager(); } }
 
       addGrammarSyncLink() {
-        const titleInput = document.getElementById('add-grammar-name');
         const urlInput = document.getElementById('add-grammar-url');
-        const title = titleInput.value.trim().toLowerCase();
         const url = urlInput.value.trim();
-        if (!title || !url || !url.startsWith('https://docs.google.com')) { this.showToast('Invalid GDoc HTML link.'); return; }
-        if (this.grammarSyncs.some(c => c.title === title)) { this.showToast('Title already exists.'); return; }
-        this.grammarSyncs.push({ title, url, lastSync: null }); this.save(); this.renderSyncManager();
-        titleInput.value = ''; urlInput.value = '';
+        if (!url || !url.startsWith('https://docs.google.com')) { this.showToast('Invalid GDoc HTML link.'); return; }
+        if (this.grammarSyncs.some(c => c.url === url)) { this.showToast('Link already added.'); return; }
+        this.grammarSyncs.push({ url, lastSync: null }); this.save(); this.renderSyncManager();
+        urlInput.value = '';
       }
-      removeGrammarLink(i) { if(confirm(`Remove Grammar link '${this.grammarSyncs[i].title}'?`)){ this.grammarSyncs.splice(i, 1); this.save(); this.renderSyncManager(); } }
+      removeGrammarLink(i) { if(confirm(`Remove Grammar link #${i + 1}?`)){ this.grammarSyncs.splice(i, 1); this.save(); this.renderSyncManager(); } }
 
       async syncMaster() {
         if (this.vocabSyncs.length === 0 && this.grammarSyncs.length === 0) {
@@ -677,13 +706,12 @@
             const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
             const contentContainer = doc.getElementById('contents') || doc.body;
             
-            // Delimiter support: Split document into sections using Heading 1 tags (H1) or '===' delimiter
+            // Extract all Heading 1 / Encabezado 1 elements (Google Docs renders Heading 1 as <h1>)
             const h1Elements = Array.from(contentContainer.querySelectorAll('h1'));
             
             if (h1Elements.length > 0) {
-              // Option A: Split by H1 elements
               h1Elements.forEach((h1) => {
-                const title = h1.textContent.trim().toLowerCase();
+                const title = h1.textContent.trim();
                 if (!title) return;
 
                 let sectionHtml = h1.outerHTML;
@@ -694,22 +722,21 @@
                   sibling = sibling.nextElementSibling;
                 }
 
-                const docData = { title, html: sectionHtml };
-                const exIndex = this.docs.findIndex(d => d.title === title);
+                const docData = { title, html: sectionHtml, sourceUrl: sync.url };
+                const exIndex = this.docs.findIndex(d => d.title.toLowerCase() === title.toLowerCase());
                 if (exIndex >= 0) this.docs[exIndex] = docData; else this.docs.push(docData);
               });
             } else {
-              // Option B: Single Full Document
+              // Fallback if no <h1> headings are present
               const fullHtml = contentContainer.innerHTML;
-              if (fullHtml.length < 10) throw new Error('No content');
-
-              const docData = { title: sync.title, html: fullHtml };
-              const exIndex = this.docs.findIndex(d => d.title === sync.title);
+              const title = doc.title || 'Grammatica Document';
+              const docData = { title, html: fullHtml, sourceUrl: sync.url };
+              const exIndex = this.docs.findIndex(d => d.title.toLowerCase() === title.toLowerCase());
               if (exIndex >= 0) this.docs[exIndex] = docData; else this.docs.push(docData);
             }
             
             sync.lastSync = nowStr;
-          } catch (e) { errors++; console.error(`Error syncing ${sync.title}:`, e); }
+          } catch (e) { errors++; console.error(`Error syncing grammar link:`, e); }
         }
         return { errors };
       }
@@ -753,11 +780,11 @@
           return;
         }
 
-        container.innerHTML = filtered.map(d => `<div class="menu-card" onclick="app.openDoc('${d.title}')"><h3>${d.title.charAt(0).toUpperCase()+d.title.slice(1)}</h3><p>Tik om te lezen</p></div>`).join('');
+        container.innerHTML = filtered.map(d => `<div class="menu-card" onclick="app.openDoc('${d.title.replace(/'/g, "\\'")}')"><h3>${d.title.charAt(0).toUpperCase()+d.title.slice(1)}</h3><p>Tik om te lezen</p></div>`).join('');
       }
 
       openDoc(title) {
-        const d = this.docs.find(doc => doc.title === title);
+        const d = this.docs.find(doc => doc.title.toLowerCase() === title.toLowerCase());
         if (!d) return;
         document.getElementById('grammar-doc-title').textContent = d.title.charAt(0).toUpperCase()+d.title.slice(1);
         document.getElementById('grammar-doc-body').innerHTML = d.html;
@@ -845,7 +872,6 @@
       }
 
       handleCardClick(event) {
-        // Prevent flipping if user clicked a link inside card or was dragging
         if (event.target.tagName === 'A' || Math.abs(this.dragDistance) > 10) return;
         this.flipCard();
       }
@@ -909,12 +935,10 @@
           }
         };
 
-        // Touch events
         zone.addEventListener('touchstart', e => onStart(e.touches[0].clientX), {passive:true});
         zone.addEventListener('touchmove', e => onMove(e.touches[0].clientX), {passive:true});
         zone.addEventListener('touchend', onEnd, {passive:true});
 
-        // Mouse drag events for Desktop
         zone.addEventListener('mousedown', e => onStart(e.clientX));
         window.addEventListener('mousemove', e => onMove(e.clientX));
         window.addEventListener('mouseup', onEnd);
