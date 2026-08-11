@@ -112,7 +112,6 @@
       padding: var(--sat) 0 var(--sab) 0;
     }
 
-    /* Screen containers with scrolling */
     .screen {
       display: none;
       flex: 1;
@@ -132,7 +131,6 @@
     h1 { font-size: 28px; font-weight: bold; }
     h2 { font-size: 20px; font-weight: 600; text-align: center; margin-bottom: 24px; }
     
-    /* Splash Screen */
     #screen-splash { justify-content: center; align-items: center; text-align: center; cursor: pointer; }
     #screen-splash h1 { font-family: 'Elms Sans', sans-serif; color: var(--accent-terracotta); font-size: 36px; font-weight: bold; }
     .splash-instructions { display: flex; flex-direction: column; align-items: center; gap: 12px; color: var(--text-muted); animation: pulse 2s infinite; margin-top: 40px;}
@@ -150,6 +148,20 @@
     .menu-card h3 { font-size: 22px; margin-bottom: 4px; color: var(--text-dark); }
     .menu-card p { font-size: 15px; color: var(--text-muted); }
 
+    .grammar-doc-card { 
+      background: var(--card-bg); 
+      border-radius: 24px; 
+      padding: 20px 24px; 
+      text-align: left; 
+      border: 1px solid var(--border-color); 
+      box-shadow: var(--shadow-sm); 
+      cursor: pointer; 
+      margin-bottom: 16px; 
+      transition: transform 0.1s;
+    }
+    .grammar-doc-card:active { transform: scale(0.98); }
+    .grammar-doc-card h3 { font-size: 18px; color: var(--text-dark); font-weight: 600; margin: 0; }
+
     #menu-sync-btn-container { margin-top: auto; padding: 20px; text-align: center;}
     .sync-btn-sm { font-size: 14px; min-height: 40px; border-radius: 20px; border: 2px dashed var(--accent-terracotta); background: #FFF3E0; color: var(--accent-terracotta); font-weight: bold; width: auto; padding: 0 20px;}
 
@@ -157,10 +169,21 @@
     label { font-weight: bold; display: block; margin-bottom: 6px; font-size: 14px;}
     .form-control { width: 100%; min-height: 44px; border-radius: 8px; border: 1px solid var(--border-color); padding: 0 12px; font-size: 15px; background: white; font-family: 'Elms Sans', sans-serif;}
     
+    .filter-scroll-area { flex: 1; overflow-y: auto; padding-right: 4px; margin-bottom: 12px; }
     .filter-group { text-align: left; }
+    
+    .filter-bottom-dock { 
+      flex-shrink: 0; 
+      position: sticky; 
+      bottom: 0; 
+      background: var(--bg-main); 
+      padding-top: 12px; 
+      padding-bottom: 8px; 
+      border-top: 1px solid var(--border-color); 
+      z-index: 10; 
+    }
     .recency-filter-card { background: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 16px; }
     
-    /* Dynamic Height Flashcard Container */
     .flashcard-wrapper {
       flex: 1;
       display: flex;
@@ -176,6 +199,8 @@
       max-width: 380px; 
       position: relative;
       cursor: grab;
+      user-select: none;
+      -webkit-user-drag: none;
     }
     .flashcard-container:active { cursor: grabbing; }
 
@@ -185,6 +210,7 @@
       transform-style: preserve-3d; 
       transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s ease; 
       transform: translateX(0); 
+      user-select: none;
     }
     
     .flashcard.flipped { transform: rotateY(180deg); }
@@ -194,7 +220,6 @@
     .flashcard.slide-out-left.flipped { transform: translateX(-140%) rotateY(180deg) rotate(-5deg); opacity: 0; }
     .flashcard.slide-out-right.flipped { transform: translateX(140%) rotateY(180deg) rotate(5deg); opacity: 0; }
 
-    /* Dynamic heights for front and back faces */
     .card-face { 
       width: 100%; 
       backface-visibility: hidden; 
@@ -267,46 +292,70 @@
     .btn-danger-sm { background: #fee2e2; color: #b91c1c; font-size: 12px; min-height: 32px; padding: 0 10px; border-radius: 8px; width: auto; font-weight: bold; border:none; cursor:pointer;}
     .btn-danger-sm:active { background: #fecaca; }
 
-    /* Grammar Reader Container - Wide & Compact Padding */
+    /* Sticky Header for Reader with Blur Effect */
+    .reader-sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(250, 246, 240, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 8px 4px 16px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .reader-doc-title {
+      color: var(--accent-terracotta);
+      font-size: 24px;
+      font-weight: bold;
+      line-height: 1.25;
+      word-break: break-word;
+      text-align: left;
+    }
+
     .doc-content-view { 
       background: white; 
       border-radius: var(--radius-card); 
-      padding: 16px 14px; 
+      padding: 20px 18px; 
       border: 1px solid var(--border-color); 
       box-shadow: var(--shadow-sm); 
       line-height: 1.6; 
       text-align: left; 
-      margin-bottom: 16px; 
+      margin-bottom: 24px; 
       font-family: 'Elms Sans', sans-serif;
-      overflow-x: hidden;
+      overflow-x: auto;
       width: 100%;
+      white-space: pre-wrap; /* Preserves tab indentations and whitespace */
+      tab-size: 4;
     }
     
-    /* Override Google Docs hardcoded wide margins and padding */
     .doc-content-view * {
-      max-width: 100% !important;
-      box-sizing: border-box !important;
+      max-width: 100%;
+      box-sizing: border-box;
+      user-select: text;
     }
-    .doc-content-view p, 
-    .doc-content-view div, 
-    .doc-content-view span, 
-    .doc-content-view h1, 
-    .doc-content-view h2, 
-    .doc-content-view h3 {
-      margin-left: 0 !important;
-      margin-right: 0 !important;
-      padding-left: 0 !important;
-      padding-right: 0 !important;
-    }
+
+    /* Preserve formatting tags inside Google Doc html */
+    .doc-content-view b, .doc-content-view strong { font-weight: bold !important; }
+    .doc-content-view i, .doc-content-view em { font-style: italic !important; }
+    .doc-content-view u { text-decoration: underline !important; }
+
+    /* Hide redundant repeated h1 at top of rendered GDoc body */
+    .doc-content-view > h1:first-child { display: none !important; }
+
     .doc-content-view ul, .doc-content-view ol {
-      margin-left: 0 !important;
-      margin-right: 0 !important;
-      padding-left: 20px !important;
+      padding-left: 24px !important;
+      margin: 12px 0 !important;
     }
-    .doc-content-view h1, .doc-content-view h2 { 
+    .doc-content-view h1, .doc-content-view h2, .doc-content-view h3 { 
       color: var(--accent-terracotta); 
       margin-bottom: 12px !important; 
-      margin-top: 12px !important;
+      margin-top: 16px !important;
+      font-weight: bold;
     }
 
     .toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #2D3748; color: white; padding: 12px 20px; border-radius: 30px; font-size: 14px; z-index: 3000; transition: transform 0.3s; pointer-events: none; }
@@ -353,33 +402,37 @@
 
   <!-- SCHERM 3: WOORDENSCHAT FILTER -->
   <section id="screen-filter" class="screen">
-    <div style="margin-bottom: 12px; text-align: left;">
+    <div style="margin-bottom: 12px; text-align: left; flex-shrink: 0;">
       <button class="btn btn-secondary" style="width:auto; padding: 0 15px;" onclick="app.navigateTo('menu')">←</button>
     </div>
 
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-shrink: 0;">
       <h1 style="font-size: 22px;">Woordenschat Filter</h1>
       <label class="checkbox-label" style="font-size:13px; font-weight:bold; color:var(--accent-terracotta);">
         <input type="checkbox" id="master-select-all" checked onchange="app.filterSelectAll(this.checked)"> Alles selecteren
       </label>
     </div>
 
-    <div class="filter-group" id="vocab-filter-list"></div>
-
-    <div class="recency-filter-card" style="margin-top: 16px; margin-bottom: 12px;">
-      <div style="display:flex; flex-direction:column; gap:6px; width:100%;">
-        <label for="filter-date-range" style="font-weight:bold; color:var(--text-dark); margin:0;">Datum filter / Date added:</label>
-        <select id="filter-date-range" class="form-control">
-          <option value="all" selected>All time (Alles)</option>
-          <option value="7">Last week (7 dagen)</option>
-          <option value="14">Last 14 days (14 dagen)</option>
-          <option value="30">Last month (30 dagen)</option>
-          <option value="180">Last 6 months (6 maanden)</option>
-        </select>
-      </div>
+    <div class="filter-scroll-area">
+      <div class="filter-group" id="vocab-filter-list"></div>
     </div>
 
-    <button class="btn btn-primary" onclick="app.startPractice()">Start met oefenen</button>
+    <div class="filter-bottom-dock">
+      <div class="recency-filter-card" style="margin-bottom: 12px;">
+        <div style="display:flex; flex-direction:column; gap:6px; width:100%;">
+          <label for="filter-date-range" style="font-weight:bold; color:var(--text-dark); margin:0;">Datum filter / Date added:</label>
+          <select id="filter-date-range" class="form-control">
+            <option value="all" selected>All time (Alles)</option>
+            <option value="7">Last week (7 dagen)</option>
+            <option value="14">Last 14 days (14 dagen)</option>
+            <option value="30">Last month (30 dagen)</option>
+            <option value="180">Last 6 months (6 maanden)</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="app.startPractice()">Start met oefenen</button>
+    </div>
   </section>
 
   <!-- SCHERM 4: FLITSKAARTEN -->
@@ -387,7 +440,9 @@
     <div class="app-header">
       <button class="btn btn-secondary" style="width:auto; padding: 0 15px;" onclick="app.navigateTo('filter')">←</button>
       <span id="progress" style="font-weight: bold; color: var(--text-muted); font-size: 14px;"></span>
-      <button class="btn btn-secondary" style="width:auto; padding: 0 15px;" onclick="app.shuffleDeck()">🔀</button>
+      <button class="btn btn-secondary" style="width:auto; padding: 0 15px; display:inline-flex; align-items:center; justify-content:center;" onclick="app.shuffleDeck()" title="Shuffle">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+      </button>
     </div>
     
     <div class="flashcard-wrapper">
@@ -412,8 +467,8 @@
     </div>
 
     <div id="flashcard-controls">
-      <button class="btn btn-secondary" onclick="app.prevCard()">Vorige (←)</button>
-      <button class="btn btn-primary" onclick="app.nextCard()">Volgende (→)</button>
+      <button class="btn btn-secondary" onclick="app.prevCard()">Vorige</button>
+      <button class="btn btn-primary" onclick="app.nextCard()">Volgende</button>
     </div>
   </section>
 
@@ -425,7 +480,7 @@
       <div style="width:40px;"></div>
     </div>
     
-    <div style="margin-top: 8px; margin-bottom: 12px;">
+    <div style="margin-top: 8px; margin-bottom: 16px;">
       <input type="search" id="grammar-search-input" class="form-control" placeholder="Zoek in grammatica..." oninput="app.renderDocList()">
     </div>
 
@@ -433,11 +488,10 @@
   </section>
 
   <!-- SCHERM 6: GRAMMATICA LEZER -->
-  <section id="screen-grammar-reader" class="screen" style="padding-left:8px; padding-right:8px;">
-    <div class="app-header">
-      <button class="btn btn-secondary" style="width:auto; padding: 0 15px;" onclick="app.navigateTo('grammar-list')">←</button>
-      <h1 style="font-size: 20px;" id="grammar-doc-title">Document</h1>
-      <div style="width:40px;"></div>
+  <section id="screen-grammar-reader" class="screen" style="padding: 0 12px 16px 12px;">
+    <div class="reader-sticky-header">
+      <button class="btn btn-secondary" style="width:auto; padding: 0 15px; display:inline-flex; align-self:flex-start;" onclick="app.navigateTo('grammar-list')">←</button>
+      <h1 id="grammar-doc-title" class="reader-doc-title">Document</h1>
     </div>
     <div class="doc-content-view" id="grammar-doc-body"></div>
   </section>
@@ -650,7 +704,8 @@
 
         for (const cat of this.vocabSyncs) {
           try {
-            const resp = await fetch(cat.url);
+            const cacheBustUrl = cat.url + (cat.url.includes('?') ? '&' : '?') + '_t=' + Date.now();
+            const resp = await fetch(cacheBustUrl, { cache: 'no-store' });
             if (!resp.ok) throw new Error('Network error');
             const text = await resp.text();
             const rows = this.parseCSV(text);
@@ -699,14 +754,16 @@
 
         for (const sync of this.grammarSyncs) {
           try {
-            const resp = await fetch(sync.url);
+            const cacheBustUrl = sync.url + (sync.url.includes('?') ? '&' : '?') + '_t=' + Date.now();
+            const resp = await fetch(cacheBustUrl, { cache: 'no-store' });
             if (!resp.ok) throw new Error('Network error');
             const rawHtml = await resp.text();
             
             const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
             const contentContainer = doc.getElementById('contents') || doc.body;
             
-            // Extract all Heading 1 / Encabezado 1 elements (Google Docs renders Heading 1 as <h1>)
+            this.docs = this.docs.filter(d => d.sourceUrl !== sync.url);
+
             const h1Elements = Array.from(contentContainer.querySelectorAll('h1'));
             
             if (h1Elements.length > 0) {
@@ -722,17 +779,12 @@
                   sibling = sibling.nextElementSibling;
                 }
 
-                const docData = { title, html: sectionHtml, sourceUrl: sync.url };
-                const exIndex = this.docs.findIndex(d => d.title.toLowerCase() === title.toLowerCase());
-                if (exIndex >= 0) this.docs[exIndex] = docData; else this.docs.push(docData);
+                this.docs.push({ title, html: sectionHtml, sourceUrl: sync.url });
               });
             } else {
-              // Fallback if no <h1> headings are present
               const fullHtml = contentContainer.innerHTML;
               const title = doc.title || 'Grammatica Document';
-              const docData = { title, html: fullHtml, sourceUrl: sync.url };
-              const exIndex = this.docs.findIndex(d => d.title.toLowerCase() === title.toLowerCase());
-              if (exIndex >= 0) this.docs[exIndex] = docData; else this.docs.push(docData);
+              this.docs.push({ title, html: fullHtml, sourceUrl: sync.url });
             }
             
             sync.lastSync = nowStr;
@@ -780,7 +832,7 @@
           return;
         }
 
-        container.innerHTML = filtered.map(d => `<div class="menu-card" onclick="app.openDoc('${d.title.replace(/'/g, "\\'")}')"><h3>${d.title.charAt(0).toUpperCase()+d.title.slice(1)}</h3><p>Tik om te lezen</p></div>`).join('');
+        container.innerHTML = filtered.map(d => `<div class="grammar-doc-card" onclick="app.openDoc('${d.title.replace(/'/g, "\\'")}')"><h3>${d.title.charAt(0).toUpperCase()+d.title.slice(1)}</h3></div>`).join('');
       }
 
       openDoc(title) {
@@ -881,7 +933,7 @@
       openGrammarDocFromFlash(docTitle) {
         this.openDoc(docTitle);
         document.getElementById('return-btn').style.display = 'flex';
-        document.querySelector('#screen-grammar-reader .app-header button').onclick = () => {
+        document.querySelector('#screen-grammar-reader .reader-sticky-header button').onclick = () => {
           app.navigateTo('flashcard');
           document.getElementById('return-btn').style.display = 'none';
         }
@@ -909,17 +961,19 @@
         const zone = document.getElementById('flashcard-swipe-zone');
         const card = document.getElementById('flashcard-current');
 
-        const onStart = (clientX) => {
+        const onStart = (e, clientX) => {
           if (!this.swipeZoneActive) return;
           this.startX = clientX;
           this.isDragging = true;
           this.dragDistance = 0;
+          card.style.transition = 'none';
         };
 
-        const onMove = (clientX) => {
+        const onMove = (e, clientX) => {
           if (!this.isDragging || !this.swipeZoneActive) return;
           this.dragDistance = clientX - this.startX;
-          if (Math.abs(this.dragDistance) > 5) {
+          if (Math.abs(this.dragDistance) > 3) {
+            if (e && e.preventDefault) e.preventDefault();
             card.style.transform = `translateX(${this.dragDistance}px) rotate(${this.dragDistance * 0.03}deg) ${card.classList.contains('flipped') ? 'rotateY(180deg)' : ''}`;
           }
         };
@@ -927,20 +981,26 @@
         const onEnd = () => {
           if (!this.isDragging || !this.swipeZoneActive) return;
           this.isDragging = false;
-          card.style.transform = '';
+          card.style.transition = '';
+          
           if (this.dragDistance < -60) {
             this.nextCard();
           } else if (this.dragDistance > 60) {
             this.prevCard();
+          } else {
+            card.style.transform = card.classList.contains('flipped') ? 'rotateY(180deg)' : 'none';
           }
         };
 
-        zone.addEventListener('touchstart', e => onStart(e.touches[0].clientX), {passive:true});
-        zone.addEventListener('touchmove', e => onMove(e.touches[0].clientX), {passive:true});
+        zone.addEventListener('touchstart', e => onStart(e, e.touches[0].clientX), {passive:true});
+        zone.addEventListener('touchmove', e => onMove(e, e.touches[0].clientX), {passive:true});
         zone.addEventListener('touchend', onEnd, {passive:true});
 
-        zone.addEventListener('mousedown', e => onStart(e.clientX));
-        window.addEventListener('mousemove', e => onMove(e.clientX));
+        zone.addEventListener('mousedown', e => {
+          if (e.target.tagName !== 'A') e.preventDefault();
+          onStart(e, e.clientX);
+        });
+        window.addEventListener('mousemove', e => onMove(e, e.clientX));
         window.addEventListener('mouseup', onEnd);
       }
 
