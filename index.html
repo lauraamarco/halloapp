@@ -326,10 +326,9 @@
       line-height: 1.6; 
       text-align: left; 
       margin-bottom: 24px; 
-      font-family: 'Elms Sans', sans-serif;
+      font-family: 'Elms Sans', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
       overflow-x: auto;
       width: 100%;
-      white-space: pre-wrap; /* Preserves tab indentations and whitespace */
       tab-size: 4;
     }
     
@@ -339,10 +338,11 @@
       user-select: text;
     }
 
-    /* Preserve formatting tags inside Google Doc html */
+    /* Preserve Google Doc text formatting rules */
     .doc-content-view b, .doc-content-view strong { font-weight: bold !important; }
     .doc-content-view i, .doc-content-view em { font-style: italic !important; }
     .doc-content-view u { text-decoration: underline !important; }
+    .doc-content-view span, .doc-content-view p { white-space: pre-wrap; } /* Preserves tab indentations and whitespace */
 
     /* Hide redundant repeated h1 at top of rendered GDoc body */
     .doc-content-view > h1:first-child { display: none !important; }
@@ -350,12 +350,6 @@
     .doc-content-view ul, .doc-content-view ol {
       padding-left: 24px !important;
       margin: 12px 0 !important;
-    }
-    .doc-content-view h1, .doc-content-view h2, .doc-content-view h3 { 
-      color: var(--accent-terracotta); 
-      margin-bottom: 12px !important; 
-      margin-top: 16px !important;
-      font-weight: bold;
     }
 
     .toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #2D3748; color: white; padding: 12px 20px; border-radius: 30px; font-size: 14px; z-index: 3000; transition: transform 0.3s; pointer-events: none; }
@@ -762,6 +756,9 @@
             const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
             const contentContainer = doc.getElementById('contents') || doc.body;
             
+            // Extract and preserve all Google Doc embedded CSS styles (bold, font sizes, colors, italics, underline)
+            const styleTags = Array.from(doc.querySelectorAll('style')).map(s => s.outerHTML).join('\n');
+
             this.docs = this.docs.filter(d => d.sourceUrl !== sync.url);
 
             const h1Elements = Array.from(contentContainer.querySelectorAll('h1'));
@@ -779,12 +776,13 @@
                   sibling = sibling.nextElementSibling;
                 }
 
-                this.docs.push({ title, html: sectionHtml, sourceUrl: sync.url });
+                // Attach GDoc CSS stylesheet rules to section html
+                this.docs.push({ title, html: styleTags + sectionHtml, sourceUrl: sync.url });
               });
             } else {
               const fullHtml = contentContainer.innerHTML;
               const title = doc.title || 'Grammatica Document';
-              this.docs.push({ title, html: fullHtml, sourceUrl: sync.url });
+              this.docs.push({ title, html: styleTags + fullHtml, sourceUrl: sync.url });
             }
             
             sync.lastSync = nowStr;
