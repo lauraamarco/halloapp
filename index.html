@@ -4,25 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
   
-  <!-- Google Fonts for content rendering -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Leckerli+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Leckerli+One&family=Elms+Sans:wght@400;600;700&family=Mozilla+Text:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <!-- Browser Tab Title -->
   <title>HalloApp</title>
 
-  <!-- Desktop Browser Favicon (Transparent Background + Terracotta 'H' in Leckerli One) -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><style>@import url('https://fonts.googleapis.com/css2?family=Leckerli+One&amp;display=swap'); text { font-family: 'Leckerli One', cursive; fill: %23C85A32; font-size: 80px; }</style><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle'>H</text></svg>">
+  <!-- Desktop Browser Favicon (Transparent Background with Terracotta 'H') -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><style>@import url('https://fonts.googleapis.com/css2?family=Leckerli+One&amp;display=swap'); text { font-family: 'Leckerli One', cursive; fill: %23C85A32; font-size: 85px; }</style><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle'>H</text></svg>">
 
-  <!-- Mobile Web App / PWA Setup -->
+  <!-- Mobile Web App Setup -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Hallo">
   <meta name="theme-color" content="#FAF6F0">
 
-  <!-- Apple Home Screen Icon -->
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><style>@import url('https://fonts.googleapis.com/css2?family=Leckerli+One&amp;display=swap'); text { font-family: 'Leckerli One', cursive; fill: %23C85A32; font-size: 80px; }</style><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle'>H</text></svg>">
+  <!-- iOS Apple Touch Icon Link -->
+  <link id="apple-touch-icon" rel="apple-touch-icon" href="">
+
+  <script>
+    // Converts SVG to PNG on the fly for iOS Home Screen icon compatibility
+    (function generateAppleTouchIcon() {
+      window.addEventListener('DOMContentLoaded', () => {
+        const svgString = `<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 100 100'><style>@import url('https://fonts.googleapis.com/css2?family=Leckerli+One&amp;display=swap'); text { font-family: 'Leckerli One', cursive; fill: %23C85A32; font-size: 85px; }</style><rect width='100%' height='100%' fill='%23FAF6F0'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle'>H</text></svg>`;
+        const img = new Image();
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString);
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = 180;
+          canvas.height = 180;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          document.getElementById('apple-touch-icon').href = canvas.toDataURL('image/png');
+        };
+      });
+    })();
+  </script>
 
   <style>
     :root {
@@ -41,9 +59,24 @@
       --sab: env(safe-area-inset-bottom, 0px);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-    body { font-family: Arial, Helvetica, sans-serif; background-color: var(--bg-main); color: var(--text-dark); min-height: 100vh; display: flex; flex-direction: column; overflow: hidden; padding: var(--sat) 0 var(--sab) 0; }
+    
+    body { 
+      font-family: 'Elms Sans', -apple-system, BlinkMacSystemFont, Arial, sans-serif; 
+      background-color: var(--bg-main); 
+      color: var(--text-dark); 
+      min-height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+      overflow: hidden; 
+      padding: var(--sat) 0 var(--sab) 0; 
+    }
+
     .screen { display: none; flex: 1; flex-direction: column; width: 100%; max-width: 480px; margin: 0 auto; padding: 16px 20px; overflow-y: auto; }
     .screen.active { display: flex; }
+    
+    #screen-flashcard { display: none; flex-direction: column; justify-content: space-between; height: 100vh; }
+    #screen-flashcard.active { display: flex; }
+
     h1 { font-size: 28px; font-weight: bold; }
     h2 { font-size: 20px; font-weight: 600; text-align: center; margin-bottom: 24px; }
     
@@ -51,53 +84,65 @@
     .splash-instructions { display: flex; flex-direction: column; align-items: center; gap: 12px; color: var(--text-muted); animation: pulse 2s infinite; margin-top: 40px;}
     @keyframes pulse { 0%, 100% { opacity: 0.6; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-6px); } }
     
-    .btn { min-height: 52px; padding: 12px 20px; border-radius: var(--radius-btn); border: none; font-size: 16px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 100%; text-decoration: none; transition: background 0.2s, transform 0.1s; }
+    .btn { min-height: 52px; padding: 12px 20px; border-radius: var(--radius-btn); border: none; font-size: 16px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 100%; text-decoration: none; transition: background 0.2s, transform 0.1s; font-family: 'Elms Sans', sans-serif; }
     .btn:active { transform: scale(0.98); }
     .btn-primary { background: linear-gradient(135deg, var(--accent-terracotta), var(--accent-warm-orange)); color: white; box-shadow: 0 4px 12px rgba(200, 90, 50, 0.3); }
     .btn-secondary { background: white; color: var(--text-dark); border: 1px solid var(--border-color); }
     
     .app-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     
-    /* Main Menu */
     .menu-grid { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; text-align: center;}
     .menu-card { background: var(--card-bg); border-radius: 16px; padding: 24px; text-align: center; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); cursor: pointer; }
     .menu-card h3 { font-size: 22px; margin-bottom: 4px; color: var(--text-dark); }
     .menu-card p { font-size: 15px; color: var(--text-muted); }
 
-    /* Sync Button at Bottom of Main Menu */
     #menu-sync-btn-container { margin-top: auto; padding: 20px; text-align: center;}
     .sync-btn-sm { font-size: 14px; min-height: 40px; border-radius: 20px; border: 2px dashed var(--accent-terracotta); background: #FFF3E0; color: var(--accent-terracotta); font-weight: bold; width: auto; padding: 0 20px;}
 
-    /* Forms */
     .form-group { margin-bottom: 16px; text-align: left; }
     label { font-weight: bold; display: block; margin-bottom: 6px; font-size: 14px;}
-    .form-control { width: 100%; min-height: 44px; border-radius: 8px; border: 1px solid var(--border-color); padding: 0 12px; font-size: 15px; background: white;}
+    .form-control { width: 100%; min-height: 44px; border-radius: 8px; border: 1px solid var(--border-color); padding: 0 12px; font-size: 15px; background: white; font-family: 'Elms Sans', sans-serif;}
     
-    /* Filters */
     .filter-group { text-align: left; }
-    .recency-filter-card { background: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+    .recency-filter-card { background: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; }
     
-    /* Flashcards */
-    .flashcard-container { perspective: 1000px; height: 320px; margin: 16px auto; width: calc(100% - 20px); max-width: 360px; position: relative;}
+    .flashcard-container { perspective: 1000px; height: 360px; max-height: 55vh; margin: auto auto; width: calc(100% - 10px); max-width: 380px; position: relative;}
     .flashcard { width: 100%; height: 100%; position: absolute; transform-style: preserve-3d; cursor: pointer; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.6s; opacity: 1; transform: translateX(0); z-index: 1;}
     .flashcard.flipped { transform: rotateY(180deg); }
     
-    /* Swiping Transitions */
     .flashcard.slide-out-left { transform: translateX(-150%) rotateY(0deg); opacity: 0; }
     .flashcard.slide-out-right { transform: translateX(150%) rotateY(0deg); opacity: 0; }
     .flashcard.slide-out-left.flipped, .flashcard.slide-out-right.flipped { transform: translateX(-150%) rotateY(180deg); opacity: 0; }
     
     .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: var(--radius-card); padding: 24px; background: white; border: 1px solid var(--border-color); box-shadow: var(--shadow-soft); display: flex; flex-direction: column; justify-content: space-between; text-align: left; overflow-y: auto;}
     .card-face.back { transform: rotateY(180deg); background: #FFFDF9; }
-    .card-main-text { font-size: 24px; font-weight: bold; text-align: center; margin: auto 0; line-height: 1.2;}
     
-    .preserved-breaks { white-space: pre-wrap; } 
+    .card-main-text { 
+      font-family: 'Mozilla Text', serif; 
+      font-size: 26px; 
+      font-weight: bold; 
+      text-align: center; 
+      margin: auto 0; 
+      line-height: 1.3;
+      white-space: pre-wrap;
+    }
+
+    #card-translation {
+      font-family: 'Mozilla Text', serif;
+      font-size: 24px;
+      color: var(--accent-terracotta);
+      text-align: center;
+      font-weight: bold;
+      line-height: 1.3;
+      white-space: pre-wrap;
+    }
+    
+    .preserved-breaks { white-space: pre-wrap; font-family: 'Elms Sans', sans-serif; } 
+    .card-notes { font-family: 'Elms Sans', sans-serif; font-size: 13px; border-top: 1px dashed #CCC; padding-top: 8px; white-space: pre-wrap; }
     .card-notes a { color: var(--accent-terracotta); text-decoration: underline; }
     
-    /* Controls */
     #flashcard-controls { display:flex; gap:16px; margin-top: auto; padding-bottom: 20px; }
 
-    /* Hierarchical Filter Styles */
     .main-cat-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; cursor: pointer; border-bottom: 1px solid var(--border-color); }
     .main-cat-left { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: bold; }
     .expand-icon { font-size: 14px; color: var(--text-muted); transition: transform 0.2s; }
@@ -107,12 +152,10 @@
     .checkbox-label { display: flex; align-items: center; gap: 12px; font-size: 15px; }
     input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent-terracotta); cursor: pointer; }
     
-    /* Sync Manager UI Styles */
     .sync-master-panel { text-align: center; background:white; padding:16px; border-radius:12px; border:1px solid var(--accent-terracotta); margin-bottom:16px; }
     .sync-list-item { background: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 12px; text-align: left;}
     .sync-list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;}
     
-    /* Sync status indicators */
     .sync-status { display:flex; align-items:center; gap: 6px; font-size:12px; margin-top:6px; border-top: 1px dashed var(--border-color); padding-top:4px; }
     .sync-status.synced { color: #16a34a; }
     .sync-status.not-synced { color: #b91c1c; }
@@ -120,12 +163,10 @@
     .btn-danger-sm { background: #fee2e2; color: #b91c1c; font-size: 12px; min-height: 32px; padding: 0 10px; border-radius: 8px; width: auto; font-weight: bold; border:none; cursor:pointer;}
     .btn-danger-sm:active { background: #fecaca; }
 
-    /* Grammar Doc View */
-    .doc-content-view { background: white; border-radius: var(--radius-card); padding: 24px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); line-height: 1.6; text-align: left; margin-bottom: 16px;}
+    .doc-content-view { background: white; border-radius: var(--radius-card); padding: 24px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); line-height: 1.6; text-align: left; margin-bottom: 16px; font-family: 'Elms Sans', sans-serif;}
     .doc-content-view h1, .doc-content-view h2 { color: var(--accent-terracotta); margin-bottom: 12px; }
     .doc-content-view p { margin-bottom: 10px; }
 
-    /* Toast */
     .toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #2D3748; color: white; padding: 12px 20px; border-radius: 30px; font-size: 14px; z-index: 3000; transition: transform 0.3s; pointer-events: none; }
     .toast.show { transform: translateX(-50%) translateY(0); }
   </style>
@@ -135,16 +176,16 @@
   <div id="toast" class="toast"></div>
   <button id="return-btn" class="btn btn-primary" style="display:none; position:fixed; bottom:30px; left:20px; width:calc(100% - 40px); z-index:200;">← Terug naar flitskaarten</button>
 
-  <!-- SCHERM 1: WELKOM (DUTCH) -->
+  <!-- SCHERM 1: WELKOM -->
   <section id="screen-splash" class="screen active">
-    <h1 style="color: var(--accent-terracotta); font-size: 36px; font-weight: bold;">Hallo Laura</h1>
+    <h1 style="color: var(--accent-terracotta); font-size: 36px; font-weight: bold; font-family: 'Leckerli One', cursive;">Hallo Laura</h1>
     <div class="splash-instructions">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
       <span>Veeg omhoog of tik om te beginnen</span>
     </div>
   </section>
 
-  <!-- SCHERM 2: HOOFDMENU (DUTCH) -->
+  <!-- SCHERM 2: HOOFDMENU -->
   <section id="screen-menu" class="screen">
     <div style="height: 60px;"></div>
     <h2>Wat wil je vandaag oefenen?</h2>
@@ -168,7 +209,7 @@
     </div>
   </section>
 
-  <!-- SCHERM 3: WOORDENSCHAT FILTER (DUTCH) -->
+  <!-- SCHERM 3: WOORDENSCHAT FILTER -->
   <section id="screen-filter" class="screen">
     <div class="app-header">
       <button class="btn btn-secondary" style="width:auto; padding: 0 15px;" onclick="app.navigateTo('menu')">←</button>
@@ -178,19 +219,24 @@
       </label>
     </div>
 
-    <!-- Recently Added Filter Option -->
     <div class="recency-filter-card">
-      <label class="checkbox-label" style="font-weight:bold; color:var(--text-dark); cursor:pointer;">
-        <input type="checkbox" id="filter-recently-added"> Alleen laatst toegevoegd (14 dagen)
-      </label>
-      <span style="font-size:12px; color:var(--accent-terracotta); font-weight:bold;">Recently added</span>
+      <div style="display:flex; flex-direction:column; gap:6px; width:100%;">
+        <label for="filter-date-range" style="font-weight:bold; color:var(--text-dark); margin:0;">Datum filter / Date added:</label>
+        <select id="filter-date-range" class="form-control">
+          <option value="all" selected>All time (Alles)</option>
+          <option value="7">Last week (7 dagen)</option>
+          <option value="14">Last 14 days (14 dagen)</option>
+          <option value="30">Last month (30 dagen)</option>
+          <option value="180">Last 6 months (6 maanden)</option>
+        </select>
+      </div>
     </div>
 
-    <div class="filter-group" id="vocab-filter-list"><!-- Dynamisch geladen --></div>
+    <div class="filter-group" id="vocab-filter-list"></div>
     <button class="btn btn-primary" onclick="app.startPractice()" style="margin-top:auto;">Start met oefenen</button>
   </section>
 
-  <!-- SCHERM 4: FLITSKAARTEN (DUTCH) -->
+  <!-- SCHERM 4: FLITSKAARTEN -->
   <section id="screen-flashcard" class="screen">
     <div class="app-header">
       <button class="btn btn-secondary" style="width:auto; padding: 0 15px;" onclick="app.navigateTo('filter')">←</button>
@@ -205,12 +251,12 @@
           <p style="text-align:center; color:var(--text-muted); font-size:12px;">Tik om te draaien</p>
         </div>
         <div class="card-face back">
-          <div style="font-size:19px; color:var(--accent-terracotta); text-align:center; font-weight:bold; line-height:1.2;" id="card-translation"></div>
+          <div id="card-translation"></div>
           <div style="background:#FAF6F0; padding:12px; border-radius:12px; font-size:14px; margin: 12px 0;">
             <div id="card-ex-nl" style="font-weight:bold; margin-bottom:4px;" class="preserved-breaks"></div>
             <div id="card-ex-en" style="font-style:italic; color:var(--text-muted);" class="preserved-breaks"></div>
           </div>
-          <div id="card-notes" class="card-notes" style="font-size:13px; border-top:1px dashed #CCC; padding-top:8px; white-space: pre-wrap;"></div>
+          <div id="card-notes" class="card-notes"></div>
         </div>
       </div>
     </div>
@@ -221,7 +267,7 @@
     </div>
   </section>
 
-  <!-- SCHERM 5: GRAMMATICA LIJST (DUTCH WITH SEARCH BAR) -->
+  <!-- SCHERM 5: GRAMMATICA LIJST -->
   <section id="screen-grammar-list" class="screen">
     <div class="app-header">
       <button class="btn btn-secondary" style="width:auto; padding: 0 15px;" onclick="app.navigateTo('menu')">←</button>
@@ -229,25 +275,24 @@
       <div style="width:40px;"></div>
     </div>
     
-    <!-- Restored Search Bar -->
     <div style="margin-top: 8px; margin-bottom: 12px;">
       <input type="search" id="grammar-search-input" class="form-control" placeholder="Zoek in grammatica (titel of inhoud)..." oninput="app.renderDocList()">
     </div>
 
-    <div id="active-doc-list"><!-- Geladen --></div>
+    <div id="active-doc-list"></div>
   </section>
 
-  <!-- SCHERM 6: GRAMMATICA LEZER (DUTCH) -->
+  <!-- SCHERM 6: GRAMMATICA LEZER -->
   <section id="screen-grammar-reader" class="screen">
     <div class="app-header">
       <button class="btn btn-secondary" style="width:auto; padding: 0 15px;" onclick="app.navigateTo('grammar-list')">←</button>
       <h1 style="font-size: 20px;" id="grammar-doc-title">Document</h1>
       <div style="width:40px;"></div>
     </div>
-    <div class="doc-content-view" id="grammar-doc-body"><!-- Inhoud vanuit GDoc --></div>
+    <div class="doc-content-view" id="grammar-doc-body"></div>
   </section>
 
-  <!-- SCREEN 7: SYNC CENTER (KEPT ENTIRELY IN ENGLISH) -->
+  <!-- SCHERM 7: SYNC CENTER -->
   <section id="screen-sync" class="screen">
     <div class="app-header">
       <button class="btn btn-secondary" style="width:auto; padding: 0 15px;" onclick="app.navigateTo('menu')">←</button>
@@ -255,7 +300,6 @@
       <div style="width:40px;"></div>
     </div>
 
-    <!-- Master Sync Panel -->
     <div class="sync-master-panel">
       <h3>Master Synchronize</h3>
       <p style="font-size: 13px; color: #b45309; margin-bottom: 12px; font-weight:bold;">
@@ -267,11 +311,10 @@
       </button>
     </div>
     
-    <!-- VOCABULARY SECTION -->
     <div style="text-align: left; background:#FFF3E0; padding:16px; border-radius:12px; border:1px solid var(--accent-terracotta); margin-bottom:16px;">
       <h3 style="color:#b45309; margin-bottom:8px;">1. Manage Vocab Links</h3>
       <p style="font-size: 13px; color: #b45309; margin-bottom: 12px;">Fetch data from all active Vocab links.</p>
-      <div id="sync-active-list" style="margin: 12px 0;"><!-- Populated --></div>
+      <div id="sync-active-list" style="margin: 12px 0;"></div>
       <button class="btn btn-primary" style="height:40px; font-size:14px; background:#b45309; border:none;" onclick="app.syncAllVocab()">
         Synchronize Vocab Only
       </button>
@@ -285,11 +328,10 @@
       </div>
     </div>
 
-    <!-- GRAMMAR SYNC SECTION -->
     <div style="text-align: left; background:#e0f2fe; padding:16px; border-radius:12px; border:1px solid #0ea5e9; margin-bottom:16px;">
       <h3 style="color:#0369a1; margin-bottom:8px;">2. Manage Grammar Links (GDoc)</h3>
       <p style="font-size: 13px; color: #0369a1; margin-bottom: 12px;">Fetch data from all active Grammar links.</p>
-      <div id="sync-grammar-active-list" style="margin: 12px 0;"><!-- Populated --></div>
+      <div id="sync-grammar-active-list" style="margin: 12px 0;"></div>
       <button class="btn btn-primary" style="background:#0ea5e9; border:none; height:40px; font-size:14px;" onclick="app.syncAllGrammar()">
         Synchronize Grammar Only
       </button>
@@ -303,7 +345,6 @@
       </div>
     </div>
 
-    <!-- DATA BACKUP -->
     <div style="text-align: left; background:#f3f4f6; padding:16px; border-radius:12px; border:1px solid var(--border-color);">
       <h3 style="margin-bottom:8px;">3. Backup & Restore (JSON)</h3>
       <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Move your offline data to another device.</p>
@@ -373,7 +414,6 @@
         s.addEventListener('click', () => this.navigateTo('menu'));
       }
 
-      /* SYNC MANAGER (ENGLISH UI) */
       renderSyncManager() {
         const vList = document.getElementById('sync-active-list');
         vList.innerHTML = this.vocabSyncs.length === 0 ? '<p style="color:var(--text-muted); font-size:13px; padding:10px;">No Vocab links added.</p>' :
@@ -473,20 +513,17 @@
             }
 
             rows.forEach((r, idx) => {
-              if (idx === 0) return; // Skip header row
+              if (idx === 0) return;
               
-              // Mandatory fields validation (Word/Sentence & Translation)
               const word = r[1] ? r[1].trim() : '';
               const trans = r[2] ? r[2].trim() : '';
               if (!word || !trans) return; 
 
-              // Safe Parsing for Optional Fields
               const subCat = (r[0] && r[0].trim()) ? r[0].trim() : 'algemeen';
               const exNl = r[3] ? r[3].trim() : '';
               const exEn = r[4] ? r[4].trim() : '';
               const notes = r[5] ? r[5].trim() : '';
               
-              // Date Added Parsing (Column 7 / index 6: ISO YYYY-MM-DD or default)
               let dateAddedTimestamp = Date.now();
               if (r[6] && r[6].trim() && !isNaN(Date.parse(r[6].trim()))) {
                 dateAddedTimestamp = new Date(r[6].trim()).getTime();
@@ -505,7 +542,6 @@
               
               const exIndex = this.cards.findIndex(c => c.word.toLowerCase() === word.toLowerCase() && c.mainCat === cat.name);
               if (exIndex >= 0) { 
-                // Preserve dateAdded if not explicitly overridden by new row data
                 if (!r[6] && this.cards[exIndex].dateAdded) {
                   cardData.dateAdded = this.cards[exIndex].dateAdded;
                 }
@@ -584,7 +620,6 @@
         }
       }
 
-      /* GRAMMAR DOCS (DUTCH UI WITH LIVE SEARCH) */
       renderDocList() {
         const container = document.getElementById('active-doc-list');
         const searchInput = document.getElementById('grammar-search-input');
@@ -619,7 +654,6 @@
         this.navigateTo('grammar-reader');
       }
 
-      /* VOCAB FILTER (DUTCH UI) */
       renderFilters() {
         const container = document.getElementById('vocab-filter-list');
         if (this.cards.length === 0) { container.innerHTML = '<p style="font-size:14px; text-align:center; padding:16px;">Geen gegevens beschikbaar. Synchroniseer via het Sync Center.</p>'; return; }
@@ -638,31 +672,35 @@
       filterSubCatCheck(mainCat) { const allSubs = document.querySelectorAll(`.sub-cat-cb[data-main="${mainCat}"]`); const allChecked = Array.from(allSubs).every(cb => cb.checked); document.querySelector(`.main-cat-item[data-cat="${mainCat}"] .main-cat-cb`).checked = allChecked; this.filterUpdateMasterStatus(); }
       filterUpdateMasterStatus() { document.getElementById('master-select-all').checked = Array.from(document.querySelectorAll('.main-cat-cb')).every(cb => cb.checked); }
 
-      /* PRACTICE DECK WITH RECENTLY ADDED FILTER SUPPORT */
       startPractice() {
         this.activeDeck = [];
-        const onlyRecentlyAdded = document.getElementById('filter-recently-added').checked;
-        const fourteenDaysAgo = Date.now() - (14 * 24 * 60 * 60 * 1000);
+        const dateRangeValue = document.getElementById('filter-date-range').value;
+        const now = Date.now();
+        let timeCutoff = 0;
+
+        if (dateRangeValue !== 'all') {
+          const days = parseInt(dateRangeValue, 10);
+          timeCutoff = now - (days * 24 * 60 * 60 * 1000);
+        }
 
         document.querySelectorAll('.main-cat-item').forEach(m => { 
           const main = m.getAttribute('data-cat'); 
           const selectedSubs = Array.from(m.querySelectorAll('.sub-cat-cb:checked')).map(cb => cb.value); 
           if (selectedSubs.length > 0) {
             let matches = this.cards.filter(c => c.mainCat === main && selectedSubs.includes(c.subCat || 'algemeen'));
-            if (onlyRecentlyAdded) {
-              matches = matches.filter(c => (c.dateAdded || 0) >= fourteenDaysAgo);
+            if (dateRangeValue !== 'all') {
+              matches = matches.filter(c => (c.dateAdded || 0) >= timeCutoff);
             }
             this.activeDeck.push(...matches);
           }
         });
 
         if (this.activeDeck.length === 0) { 
-          this.showToast(onlyRecentlyAdded ? 'Geen recent toegevoegde woorden gevonden in de gekozen categorieën.' : 'Selecteer ten minste één categorie.'); 
+          this.showToast(dateRangeValue !== 'all' ? 'Geen woorden gevonden voor de gekozen datumfilter.' : 'Selecteer ten minste één categorie.'); 
           return; 
         }
 
-        if (onlyRecentlyAdded) {
-          // Sort newest items first when using recency filter
+        if (dateRangeValue !== 'all') {
           this.activeDeck.sort((a, b) => (b.dateAdded || 0) - (a.dateAdded || 0));
           this.currentIndex = 0;
           this.renderCard();
@@ -732,50 +770,46 @@
         }, {passive:true});
       }
 
-parseCSV(text) {
-    const rows = [];
-    let currentRow = [];
-    let currentCell = '';
-    let inQuotes = false;
+      parseCSV(text) {
+        const rows = [];
+        let currentRow = [];
+        let currentCell = '';
+        let inQuotes = false;
 
-    // Standardize line endings
-    const str = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        const str = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 
-    for (let i = 0; i < str.length; i++) {
-      const char = str[i];
-      const nextChar = str[i + 1];
+        for (let i = 0; i < str.length; i++) {
+          const char = str[i];
+          const nextChar = str[i + 1];
 
-      if (char === '"') {
-        if (inQuotes && nextChar === '"') {
-          // Double quotes inside quoted text convert to a single quote
-          currentCell += '"';
-          i++; 
-        } else {
-          // Toggle quote state
-          inQuotes = !inQuotes;
+          if (char === '"') {
+            if (inQuotes && nextChar === '"') {
+              currentCell += '"';
+              i++; 
+            } else {
+              inQuotes = !inQuotes;
+            }
+          } else if (char === ',' && !inQuotes) {
+            currentRow.push(currentCell);
+            currentCell = '';
+          } else if (char === '\n' && !inQuotes) {
+            currentRow.push(currentCell);
+            rows.push(currentRow);
+            currentRow = [];
+            currentCell = '';
+          } else {
+            currentCell += char;
+          }
         }
-      } else if (char === ',' && !inQuotes) {
-        // End of column
-        currentRow.push(currentCell);
-        currentCell = '';
-      } else if (char === '\n' && !inQuotes) {
-        // End of row
-        currentRow.push(currentCell);
-        rows.push(currentRow);
-        currentRow = [];
-        currentCell = '';
-      } else {
-        currentCell += char;
+
+        if (currentCell !== '' || currentRow.length > 0) {
+          currentRow.push(currentCell);
+          rows.push(currentRow);
+        }
+
+        return rows;
       }
-    }
-
-    if (currentCell !== '' || currentRow.length > 0) {
-      currentRow.push(currentCell);
-      rows.push(currentRow);
-    }
-
-    return rows;
-  }    
+    
       exportData() {
         const data = { v: this.cards, cats: this.vocabSyncs, gSyncs: this.grammarSyncs, docs: this.docs };
         const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
