@@ -3,17 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  
+  <!-- Google Font: Leckerli One -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Leckerli+One&display=swap" rel="stylesheet">
+
+  <!-- Browser Tab Title -->
   <title>HalloApp</title>
+
+  <!-- Desktop Chrome / Tab Favicon (Transparent background, "H" in Leckerli One) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><defs><style>@import url('https://fonts.googleapis.com/css2?family=Leckerli+One%26display=swap'); .h-fav { font-family: 'Leckerli One', cursive; font-size: 50px; fill: %23D96B43; }</style></defs><text x='50%' y='54%' class='h-fav' text-anchor='middle' dominant-baseline='middle'>H</text></svg>">
+
+  <!-- Mobile Web App / PWA Setup -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Hallo">
   <meta name="theme-color" content="#FAF6F0">
-  <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><rect width='100%' height='100%' rx='40' fill='%23FF8A65'/><text x='50%' y='54%' font-family='Arial-BoldMT, Arial, sans-serif' font-weight='bold' font-size='36' fill='%23FFFFFF' text-anchor='middle' dominant-baseline='middle'>Hallo</text></svg>">
+
+  <!-- iPhone / iPad Home Screen Icon (Terracotta square: "H" in Leckerli One + "allo" in modern sans-serif) -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><defs><style>@import url('https://fonts.googleapis.com/css2?family=Leckerli+One%26display=swap'); .h-main { font-family: 'Leckerli One', cursive; font-size: 46px; fill: %23FFFFFF; } .allo-main { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 700; font-size: 38px; fill: %23FFFFFF; letter-spacing: -1px; }</style></defs><rect width='100%' height='100%' rx='40' fill='%23D96B43'/><text x='50%' y='54%' text-anchor='middle' dominant-baseline='middle'><tspan class='h-main'>H</tspan><tspan class='allo-main'>allo</tspan></text></svg>">
+
   <style>
     :root {
       --bg-main: #FAF6F0;
       --card-bg: #FFFFFF;
-      --accent-terracotta: #FF8A65;
+      --accent-terracotta: #D96B43;
       --accent-warm-orange: #FFB74D;
       --text-dark: #2D3748;
       --text-muted: #718096;
@@ -38,24 +53,35 @@
     
     .btn { min-height: 52px; padding: 12px 20px; border-radius: var(--radius-btn); border: none; font-size: 16px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 100%; text-decoration: none; transition: background 0.2s, transform 0.1s; }
     .btn:active { transform: scale(0.98); }
-    .btn-primary { background: linear-gradient(135deg, var(--accent-terracotta), var(--accent-warm-orange)); color: white; box-shadow: 0 4px 12px rgba(255, 138, 101, 0.3); }
+    .btn-primary { background: linear-gradient(135deg, var(--accent-terracotta), var(--accent-warm-orange)); color: white; box-shadow: 0 4px 12px rgba(217, 107, 67, 0.3); }
     .btn-secondary { background: white; color: var(--text-dark); border: 1px solid var(--border-color); }
     
     .app-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .menu-card { background: var(--card-bg); border-radius: 16px; padding: 24px; text-align: center; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); cursor: pointer; margin-bottom: 16px; }
-    .menu-card h3 { font-size: 22px; margin-bottom: 4px; }
-    .menu-card p { font-size: 15px; color: var(--text-muted); }
     
+    /* Main Menu */
+    .menu-grid { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; text-align: center;}
+    .menu-card { background: var(--card-bg); border-radius: 16px; padding: 24px; text-align: center; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); cursor: pointer; }
+    .menu-card h3 { font-size: 22px; margin-bottom: 4px; color: var(--text-dark); }
+    .menu-card p { font-size: 15px; color: var(--text-muted); }
+
+    /* Sync Button at Bottom of Main Menu */
+    #menu-sync-btn-container { margin-top: auto; padding: 20px; text-align: center;}
+    .sync-btn-sm { font-size: 14px; min-height: 40px; border-radius: 20px; border: 2px dashed var(--accent-terracotta); background: #FFF3E0; color: var(--accent-terracotta); font-weight: bold; width: auto; padding: 0 20px;}
+
+    /* Forms */
     .form-group { margin-bottom: 16px; text-align: left; }
     label { font-weight: bold; display: block; margin-bottom: 6px; font-size: 14px;}
     .form-control { width: 100%; min-height: 44px; border-radius: 8px; border: 1px solid var(--border-color); padding: 0 12px; font-size: 15px; background: white;}
     
-    /* FLASHCARD: Size/Shape modified (Smaller card, extreme rounding, deeper shadow) */
-    .flashcard-container { perspective: 1000px; height: 320px; /* smaller vertical space */ margin: 16px auto; width: calc(100% - 20px); max-width: 360px; position: relative;}
+    /* Filters */
+    .filter-group { text-align: left; }
+    
+    /* Flashcards */
+    .flashcard-container { perspective: 1000px; height: 320px; margin: 16px auto; width: calc(100% - 20px); max-width: 360px; position: relative;}
     .flashcard { width: 100%; height: 100%; position: absolute; transform-style: preserve-3d; cursor: pointer; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.6s; opacity: 1; transform: translateX(0); z-index: 1;}
     .flashcard.flipped { transform: rotateY(180deg); }
     
-    /* Special Swiping Transition Classes */
+    /* Swiping Transition Classes */
     .flashcard.slide-out-left { transform: translateX(-150%) rotateY(0deg); opacity: 0; }
     .flashcard.slide-out-right { transform: translateX(150%) rotateY(0deg); opacity: 0; }
     .flashcard.slide-out-left.flipped, .flashcard.slide-out-right.flipped { transform: translateX(-150%) rotateY(180deg); opacity: 0; }
@@ -64,11 +90,11 @@
     .card-face.back { transform: rotateY(180deg); background: #FFFDF9; }
     .card-main-text { font-size: 24px; font-weight: bold; text-align: center; margin: auto 0; line-height: 1.2;}
     
-    /* Spreadsheet break-line fix (CMD+ENTER handling) */
+    /* Spreadsheet break-line fix */
     .preserved-breaks { white-space: pre-wrap; } 
     .card-notes a { color: var(--accent-terracotta); text-decoration: underline; }
     
-    /* Buttons at bottom of screen */
+    /* Controls */
     #flashcard-controls { display:flex; gap:16px; margin-top: auto; padding-bottom: 20px; }
 
     /* Hierarchical Filter Dropdown Styles */
@@ -83,14 +109,13 @@
     
     /* Sync Manager UI & Status Visualization */
     .sync-master-panel { text-align: center; background:white; padding:16px; border-radius:12px; border:1px solid var(--accent-terracotta); margin-bottom:16px; }
-    .sync-list-item { background: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+    .sync-list-item { background: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 12px; text-align: left;}
     .sync-list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;}
     
     /* Status indicators */
     .sync-status { display:flex; align-items:center; gap: 6px; font-size:12px; margin-top:6px; border-top: 1px dashed var(--border-color); padding-top:4px; }
-    .sync-status.synced { color: #16a34a; } /* Green */
-    .sync-status.not-synced { color: #b91c1c; } /* Red */
-    .sync-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .sync-status.synced { color: #16a34a; }
+    .sync-status.not-synced { color: #b91c1c; }
 
     .btn-danger-sm { background: #fee2e2; color: #b91c1c; font-size: 12px; min-height: 32px; padding: 0 10px; border-radius: 8px; width: auto; font-weight: bold; border:none; cursor:pointer;}
     .btn-danger-sm:active { background: #fecaca; }
@@ -106,6 +131,7 @@
   </style>
 </head>
 <body>
+
   <div id="toast" class="toast"></div>
   <button id="return-btn" class="btn btn-primary" style="display:none; position:fixed; bottom:30px; left:20px; width:calc(100% - 40px); z-index:200;">← Terug naar Flashcards</button>
 
@@ -122,17 +148,27 @@
   <section id="screen-menu" class="screen">
     <div style="height: 60px;"></div>
     <h2>Wat wil je vandaag oefenen?</h2>
-    <div class="menu-card" onclick="app.navigateTo('filter')"><h3>Vocabulaire</h3><p>Woorden & zinnen</p></div>
-    <div class="menu-card" onclick="app.navigateTo('grammar-list')"><h3>Grammatica</h3><p>Grammatica documenten</p></div>
-    <div class="sync-section">
-      <button class="btn sync-btn" onclick="app.navigateTo('sync')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4m16-5l-7 7-7-7m7 7V3"/></svg>
+    
+    <div class="menu-grid">
+      <div class="menu-card" onclick="app.navigateTo('filter')">
+        <h3>Vocabulaire</h3>
+        <p>Woorden & zinnen</p>
+      </div>
+      <div class="menu-card" onclick="app.navigateTo('grammar-list')">
+        <h3>Grammatica</h3>
+        <p>Grammatica documenten</p>
+      </div>
+    </div>
+
+    <div id="menu-sync-btn-container">
+      <button class="btn sync-btn-sm" onclick="app.navigateTo('sync')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4m16-5l-7 7-7-7m7 7V3"/></svg>
         Sync Center
       </button>
     </div>
   </section>
 
-  <!-- SCREEN 3: VOCAB FILTER (NEW: Hierarchical Dropdown) -->
+  <!-- SCREEN 3: VOCAB FILTER -->
   <section id="screen-filter" class="screen">
     <div class="app-header">
       <button class="btn btn-secondary" style="width:auto; padding: 0 15px;" onclick="app.navigateTo('menu')">←</button>
@@ -145,7 +181,7 @@
     <button class="btn btn-primary" onclick="app.startPractice()" style="margin-top:auto;">Start Oefenen</button>
   </section>
 
-  <!-- SCREEN 4: FLASHCARD (Modified for smaller size, rounding, special swipe) -->
+  <!-- SCREEN 4: FLASHCARD -->
   <section id="screen-flashcard" class="screen">
     <div class="app-header">
       <button class="btn btn-secondary" style="width:auto; padding: 0 15px;" onclick="app.navigateTo('filter')">←</button>
@@ -153,9 +189,7 @@
       <button class="btn btn-secondary" style="width:auto; padding: 0 15px;" onclick="app.shuffleDeck()">🔀</button>
     </div>
     
-    <!-- This container is static -->
     <div class="flashcard-container" id="flashcard-swipe-zone">
-      <!-- These are the animated cards -->
       <div class="flashcard" id="flashcard-current" onclick="app.flipCard()">
         <div class="card-face front">
           <div class="card-main-text" id="card-word"></div>
@@ -164,7 +198,6 @@
         <div class="card-face back">
           <div style="font-size:19px; color:var(--accent-terracotta); text-align:center; font-weight:bold; line-height:1.2;" id="card-translation"></div>
           <div style="background:#FAF6F0; padding:12px; border-radius:12px; font-size:14px; margin: 12px 0;">
-            <!-- Spreadsheet newline preserved with .preserved-breaks -->
             <div id="card-ex-nl" style="font-weight:bold; margin-bottom:4px;" class="preserved-breaks"></div>
             <div id="card-ex-en" style="font-style:italic; color:var(--text-muted);" class="preserved-breaks"></div>
           </div>
@@ -173,7 +206,6 @@
       </div>
     </div>
 
-    <!-- Buttons moved to very bottom -->
     <div id="flashcard-controls">
       <button class="btn btn-secondary" onclick="app.prevCard()">Vorige</button>
       <button class="btn btn-primary" onclick="app.nextCard()">Volgende</button>
@@ -200,7 +232,7 @@
     <div class="doc-content-view" id="grammar-doc-body"><!-- Populated with HTML from GDoc --></div>
   </section>
 
-  <!-- SCREEN 7: SYNC CENTER (NEW: Master Sync, Status Visualization) -->
+  <!-- SCREEN 7: SYNC CENTER -->
   <section id="screen-sync" class="screen">
     <div class="app-header">
       <button class="btn btn-secondary" style="width:auto; padding: 0 15px;" onclick="app.navigateTo('menu')">←</button>
@@ -208,58 +240,61 @@
       <div style="width:40px;"></div>
     </div>
 
-    <!-- Master Sync Panel (The definition) -->
+    <!-- Master Sync Panel -->
     <div class="sync-master-panel">
-      <h3>Synchroniseer Alles</h3>
+      <h3>Master Synchronize</h3>
       <p style="font-size: 13px; color: #b45309; margin-bottom: 12px; font-weight:bold;">
-        Trigger een master batch-update: Haal data op van ALLE onderstaande Vocab- AND Grammatica-links in één klik.
+        Trigger a full database update: Fetch latest data from ALL active Vocab AND Grammar links in one click.
       </p>
-      <button class="btn btn-primary" style="height:60px;" onclick="app.syncMaster()">
+      <button class="btn btn-primary" style="height:60px; font-size:18px;" onclick="app.syncMaster()">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4m16-5l-7 7-7-7m7 7V3"/></svg>
-        Master Sync (Alles)
+        Master Sync (Everything)
       </button>
     </div>
     
     <!-- VOCABULARY SECTION -->
     <div style="text-align: left; background:#FFF3E0; padding:16px; border-radius:12px; border:1px solid var(--accent-terracotta); margin-bottom:16px;">
-      <h3 style="color:#b45309;">1. Vocab Links Beheren</h3>
+      <h3 style="color:#b45309; margin-bottom:8px;">1. Manage Vocab Links</h3>
+      <p style="font-size: 13px; color: #b45309; margin-bottom: 12px;">Fetch data from all active Vocab links.</p>
       <div id="sync-active-list" style="margin: 12px 0;"><!-- Populated --></div>
-      <button class="btn btn-primary" style="height:40px; font-size:14px;" onclick="app.syncAllVocab()">
-        Alleen Vocab Synchroniseren
+      <button class="btn btn-primary" style="height:40px; font-size:14px; background:#b45309; border:none;" onclick="app.syncAllVocab()">
+        Synchronize Vocab Only
       </button>
       <div style="height:1px; background:var(--border-color); margin: 16px 0;"></div>
       <div style="background:white; padding:16px; border-radius:12px; border:1px solid var(--border-color);">
-        <label>Categorie Naam (e.g. basis)</label>
+        <label>Category Name (e.g. basis)</label>
         <input type="text" id="add-cat-name" class="form-control" placeholder="basis" style="margin-bottom:10px;">
-        <label>CSV URL (Google Sheet 'Gepubliceerd op internet')</label>
+        <label>CSV URL (Google Sheet 'Publish to web')</label>
         <input type="text" id="add-cat-url" class="form-control" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv" style="margin-bottom:10px;">
-        <button class="btn btn-secondary" style="width:100%; height:40px; font-size:14px;" onclick="app.addCategorySyncLink()">Vocab Link Toevoegen</button>
+        <button class="btn btn-secondary" style="width:100%; height:40px; font-size:14px; font-weight:bold;" onclick="app.addCategorySyncLink()">Add Vocab Link</button>
       </div>
     </div>
 
     <!-- GRAMMAR SYNC SECTION -->
     <div style="text-align: left; background:#e0f2fe; padding:16px; border-radius:12px; border:1px solid #0ea5e9; margin-bottom:16px;">
-      <h3 style="color:#0369a1;">2. Grammatica Links Beheren (GDoc)</h3>
+      <h3 style="color:#0369a1; margin-bottom:8px;">2. Manage Grammar Links (GDoc)</h3>
+      <p style="font-size: 13px; color: #0369a1; margin-bottom: 12px;">Fetch data from all active Grammatica links.</p>
       <div id="sync-grammar-active-list" style="margin: 12px 0;"><!-- Populated --></div>
       <button class="btn btn-primary" style="background:#0ea5e9; border:none; height:40px; font-size:14px;" onclick="app.syncAllGrammar()">
-        Alleen Grammatica Synchroniseren
+        Synchronize Grammar Only
       </button>
        <div style="height:1px; background:var(--border-color); margin: 16px 0;"></div>
       <div style="background:white; padding:16px; border-radius:12px; border:1px solid var(--border-color);">
-        <label>Gids Titel (e.g. lidwoorden)</label>
+        <label>Guide Title (e.g. lidwoorden)</label>
         <input type="text" id="add-grammar-name" class="form-control" placeholder="lidwoorden" style="margin-bottom:10px;">
         <label>GDoc HTML URL ('Publish to web' > Web page)</label>
         <input type="text" id="add-grammar-url" class="form-control" placeholder="https://docs.google.com/document/d/.../pub?output=html" style="margin-bottom:10px;">
-        <button class="btn btn-secondary" style="width:100%; height:40px; font-size:14px;" onclick="app.addGrammarSyncLink()">Grammatica Link Toevoegen</button>
+        <button class="btn btn-secondary" style="width:100%; height:40px; font-size:14px; font-weight:bold;" onclick="app.addGrammarSyncLink()">Add Grammar Link</button>
       </div>
     </div>
 
     <!-- DATA BACKUP -->
     <div style="text-align: left; background:#f3f4f6; padding:16px; border-radius:12px; border:1px solid var(--border-color);">
-      <h3>3. Backup & Herstel (JSON)</h3>
+      <h3 style="margin-bottom:8px;">3. Backup & Restore (JSON)</h3>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Move your offline data to another device.</p>
       <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
-        <button class="btn btn-secondary" style="width:100%;" onclick="app.exportData()">Exporteer Data (JSON)</button>
-        <button class="btn-danger-sm" style="width:100%; border:1px solid #b91c1c; background:white; min-height:44px;" onclick="document.getElementById('importFile').click()">Herstel Data uit JSON</button>
+        <button class="btn btn-secondary" style="width:100%; height:40px; font-size:14px; font-weight:bold;" onclick="app.exportData()">Export Data (JSON)</button>
+        <button class="btn-danger-sm" style="width:100%; border:1px solid #b91c1c; background:white; min-height:44px;" onclick="document.getElementById('importFile').click()">Restore Data from JSON</button>
         <input type="file" id="importFile" style="display:none;" accept=".json" onchange="app.restoreData(event)">
       </div>
     </div>
@@ -270,11 +305,10 @@
     class HalloApp {
       constructor() {
         this.cards = JSON.parse(localStorage.getItem('hallo_v')) || [];
-        this.vocabSyncs = JSON.parse(localStorage.getItem('hallo_cats')) || []; // [{name, url, lastSync}]
-        this.grammarSyncs = JSON.parse(localStorage.getItem('hallo_g_syncs')) || []; // [{title, url, lastSync}]
-        this.docs = JSON.parse(localStorage.getItem('hallo_docs')) || []; // [{title, html}]
+        this.vocabSyncs = JSON.parse(localStorage.getItem('hallo_cats')) || [];
+        this.grammarSyncs = JSON.parse(localStorage.getItem('hallo_g_syncs')) || [];
+        this.docs = JSON.parse(localStorage.getItem('hallo_docs')) || [];
         
-        // Ensure new structures handle backward compatibility
         this.vocabSyncs = this.vocabSyncs.map(s => s.lastSync ? s : {...s, lastSync: null});
         this.grammarSyncs = this.grammarSyncs.map(s => s.lastSync ? s : {...s, lastSync: null});
 
@@ -324,13 +358,12 @@
         s.addEventListener('click', () => this.navigateTo('menu'));
       }
 
-      // SYNC MANAGER UI (Modified for Status Visualization)
       renderSyncManager() {
         const vList = document.getElementById('sync-active-list');
-        vList.innerHTML = this.vocabSyncs.length === 0 ? '<p style="color:var(--text-muted); font-size:13px; padding:10px;">Geen Vocab links.</p>' :
+        vList.innerHTML = this.vocabSyncs.length === 0 ? '<p style="color:var(--text-muted); font-size:13px; padding:10px;">No Vocab links.</p>' :
           this.vocabSyncs.map((c, i) => {
             const statusClass = c.lastSync ? 'synced' : 'not-synced';
-            const statusText = c.lastSync ? `🟢 Gesynchroniseerd op ${c.lastSync}` : '🔴 Niet gesynchroniseerd';
+            const statusText = c.lastSync ? `🟢 Synced on ${c.lastSync}` : '🔴 Not synced';
             return `
               <div class="sync-list-item">
                 <div class="sync-list-header"><strong>${c.name}</strong><button class="btn-danger-sm" onclick="app.removeVocabLink(${i})">X</button></div>
@@ -341,10 +374,10 @@
           }).join('');
           
         const gList = document.getElementById('sync-grammar-active-list');
-        gList.innerHTML = this.grammarSyncs.length === 0 ? '<p style="color:var(--text-muted); font-size:13px; padding:10px;">Geen Grammatica links.</p>' :
+        gList.innerHTML = this.grammarSyncs.length === 0 ? '<p style="color:var(--text-muted); font-size:13px; padding:10px;">No Grammar links.</p>' :
           this.grammarSyncs.map((c, i) => {
              const statusClass = c.lastSync ? 'synced' : 'not-synced';
-             const statusText = c.lastSync ? `🟢 Gesynchroniseerd op ${c.lastSync}` : '🔴 Niet gesynchroniseerd';
+             const statusText = c.lastSync ? `🟢 Synced on ${c.lastSync}` : '🔴 Not synced';
              return `
               <div class="sync-list-item">
                 <div class="sync-list-header"><strong>${c.title}</strong><button class="btn-danger-sm" onclick="app.removeGrammarLink(${i})">X</button></div>
@@ -355,51 +388,56 @@
           }).join('');
       }
 
-      // Add Links (Modified to handle backward compatible timestamp structure)
       addCategorySyncLink() {
         const nameInput = document.getElementById('add-cat-name');
         const urlInput = document.getElementById('add-cat-url');
         const name = nameInput.value.trim().toLowerCase();
         const url = urlInput.value.trim();
-        if (!name || !url || !url.startsWith('https://')) { this.showToast('Ongeldige Vocab link.'); return; }
-        if (this.vocabSyncs.some(c => c.name === name)) { this.showToast('Bestaat al.'); return; }
+        if (!name || !url || !url.startsWith('https://')) { this.showToast('Invalid Vocab link.'); return; }
+        if (this.vocabSyncs.some(c => c.name === name)) { this.showToast('Already exists.'); return; }
         this.vocabSyncs.push({ name, url, lastSync: null }); this.save(); this.renderSyncManager();
         nameInput.value = ''; urlInput.value = '';
       }
-      removeVocabLink(i) { if(confirm(`Verwijder Vocab link voor '${this.vocabSyncs[i].name}'? Reeds geïmporteerde woorden blijven behouden.`)){ this.vocabSyncs.splice(i, 1); this.save(); this.renderSyncManager(); } }
+      removeVocabLink(i) { if(confirm(`Remove Vocab link for '${this.vocabSyncs[i].name}'? Reeds geïmporteerde woorden blijven behouden.`)){ this.vocabSyncs.splice(i, 1); this.save(); this.renderSyncManager(); } }
 
       addGrammarSyncLink() {
         const titleInput = document.getElementById('add-grammar-name');
         const urlInput = document.getElementById('add-grammar-url');
         const title = titleInput.value.trim().toLowerCase();
         const url = urlInput.value.trim();
-        if (!title || !url || !url.startsWith('https://docs.google.com')) { this.showToast('Ongeldige GDoc HTML link.'); return; }
+        if (!title || !url || !url.startsWith('https://docs.google.com')) { this.showToast('Invalid GDoc HTML link.'); return; }
         if (this.grammarSyncs.some(c => c.title === title)) { this.showToast('Titel bestaat al.'); return; }
         this.grammarSyncs.push({ title, url, lastSync: null }); this.save(); this.renderSyncManager();
         titleInput.value = ''; urlInput.value = '';
       }
-      removeGrammarLink(i) { if(confirm(`Verwijder Grammatica link voor '${this.grammarSyncs[i].title}'? Reeds geïmporteerde documenten blijven behouden.`)){ this.grammarSyncs.splice(i, 1); this.save(); this.renderSyncManager(); } }
+      removeGrammarLink(i) { if(confirm(`Remove Grammar link for '${this.grammarSyncs[i].title}'? Reeds geïmporteerde documenten blijven behouden.`)){ this.grammarSyncs.splice(i, 1); this.save(); this.renderSyncManager(); } }
 
-      // NEW MASTER SYNC LOGIC (The definition of "Alles")
       async syncMaster() {
         if (this.vocabSyncs.length === 0 && this.grammarSyncs.length === 0) {
-          this.showToast('Voeg eerst categorie- of documentlinks toe.'); return;
+          this.showToast('Add category or document links first.'); return;
         }
-        this.showToast('Master Sync gestart... Bezig met updaten van ALLES.', true);
+        this.showToast('Master Sync started... This may take a few seconds.', true);
         
-        // Use Promise.allSettled to handle all network fetches in parallel
-        await Promise.allSettled([
-          this.syncVocabBatch(), // internal method, no navigation
-          this.syncGrammarBatch() // internal method, no navigation
+        const results = await Promise.allSettled([
+          this.syncVocabBatch(),
+          this.syncGrammarBatch()
         ]);
         
+        const vocabRes = results[0].status === 'fulfilled' ? results[0].value : { errors: 1 };
+        const grammarRes = results[1].status === 'fulfilled' ? results[1].value : { errors: 1 };
+
+        const totalErrors = vocabRes.errors + grammarRes.errors;
+        
         this.save();
-        this.renderSyncManager(); // Update visualization
-        this.showToast('Master Sync voltooid! Volledige database bijgewerkt.', true);
-        // After master sync, stay on the sync page so the user can see the green timestamps.
+        this.renderSyncManager();
+
+        if (totalErrors === 0) {
+           this.showToast('Master Sync success! All active links are fully updated.', true);
+        } else {
+           this.showToast(`Master Sync complete, but found ${totalErrors} errors. Check RED status markers for details.`, true);
+        }
       }
 
-      // Internal batch processing methods (separated from screen buttons)
       async syncVocabBatch() {
         let insertedTotal = 0, updatedTotal = 0, errors = 0;
         const nowStr = new Date().toLocaleString('nl-NL');
@@ -408,19 +446,19 @@
           try {
             console.log(`Hallo: Syncing vocab '${cat.name}'...`);
             const resp = await fetch(cat.url);
-            if (!resp.ok) throw new Error('Fout');
+            if (!resp.ok) throw new Error('Network error');
             const text = await resp.text();
             const rows = this.parseCSV(text);
             
-            if (rows.length === 0) throw new Error('Geen rijen');
-            // Column check (Columns: Subcat, Word, Trans, ExNL, ExEN, Notes - Drop Main Category)
+            if (rows.length === 0) throw new Error('Google returned 0 rows.');
+            
             if (rows[0].length !== 6) { 
-              console.error(`Hallo: '${cat.name}' structure mismatch. Heb je de 'Main Category' kolom verwijderd?`);
-              errors++; continue; 
+              this.showToast(`Error: Vocab link '${cat.name}' has structural mismatch (${rows[0].length} columns found, expected 6). Did you delete 'Main Category' column?`, true);
+              throw new Error(`Structural mismatch: expected 6, found ${rows[0].length}.`);
             }
 
             rows.forEach((r, idx) => {
-              if (idx === 0 || r.length < 3 || !r[1] || !r[2]) return; // Skip invalid
+              if (idx === 0 || r.length < 3 || !r[1] || !r[2]) return;
               
               const cardData = { 
                 mainCat: cat.name, 
@@ -436,10 +474,15 @@
               if (exIndex >= 0) { this.cards[exIndex] = cardData; updatedTotal++; } else { this.cards.push(cardData); insertedTotal++; }
             });
             
-            // Only update the timestamp if processed successfully
             cat.lastSync = nowStr;
             console.log(`Hallo: '${cat.name}' vocab sync success.`);
-          } catch (e) { errors++; console.error(`Hallo: Error syncing ${cat.name}:`, e); }
+          } catch (e) { 
+              errors++; 
+              if (e.message.includes('Google returned 0 rows')) {
+                this.showToast(`Link error: Vocab category '${cat.name}' returned no data. It might be blocked by CORS policy. Ensure your sheet has structural data.`, true);
+              }
+              console.error(`Hallo: Error syncing ${cat.name}:`, e); 
+          }
         }
         return { insertedTotal, updatedTotal, errors };
       }
@@ -452,19 +495,18 @@
           try {
             console.log(`Hallo: Syncing grammar '${sync.title}'...`);
             const resp = await fetch(sync.url);
-            if (!resp.ok) throw new Error('Fout');
+            if (!resp.ok) throw new Error('Network error');
             const rawHtml = await resp.text();
             
             const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
             const content = doc.getElementById('contents') ? doc.getElementById('contents').innerHTML : doc.body.innerHTML;
             
-            if (!content || content.length < 10) throw new Error('Geen inhoud');
+            if (!content || content.length < 10) throw new Error('No content extracted');
 
             const docData = { title: sync.title, html: content };
             const exIndex = this.docs.findIndex(d => d.title === sync.title);
             if (exIndex >= 0) this.docs[exIndex] = docData; else this.docs.push(docData);
             
-            // Only update the timestamp if processed successfully
             sync.lastSync = nowStr;
             console.log(`Hallo: '${sync.title}' grammar sync success.`);
           } catch (e) { errors++; console.error(`Hallo: Error syncing ${sync.title}:`, e); }
@@ -472,30 +514,38 @@
         return { errors };
       }
 
-      // EXISTING SYNC METHODS (Modified for separate buttons)
       async syncAllVocab() {
-        if (this.vocabSyncs.length === 0) { this.showToast('Voeg eerst Vocab links toe.'); return; }
-        this.showToast('Vocab Sync gestart...');
+        if (this.vocabSyncs.length === 0) { this.showToast('No Vocab links added.'); return; }
+        this.showToast('Vocab Sync started...');
         
         const results = await this.syncVocabBatch();
         
-        this.save(); this.renderSyncManager(); // Update visualization
-        this.showToast(`Vocab Sync voltooid! (${results.insertedTotal} nieuw, ${results.updatedTotal} bijgewerkt). ${results.errors > 0 ? results.errors + ' fouten.' : ''}`);
-        this.navigateTo('menu');
+        this.save(); this.renderSyncManager();
+        
+        if (results.errors === 0) {
+           this.showToast(`Vocab Sync success! (${results.insertedTotal} new, ${results.updatedTotal} updated).`);
+           this.navigateTo('menu');
+        } else {
+           this.showToast(`Vocab Sync complete, but found ${results.errors} errors. Check RED status markers.`, true);
+        }
       }
 
       async syncAllGrammar() {
-        if (this.grammarSyncs.length === 0) { this.showToast('Voeg eerst Grammatica links toe.'); return; }
-        this.showToast('Grammatica Sync gestart...');
+        if (this.grammarSyncs.length === 0) { this.showToast('No Grammar links added.'); return; }
+        this.showToast('Grammar Sync started...');
         
         const results = await this.syncGrammarBatch();
         
-        this.save(); this.renderSyncManager(); // Update visualization
-        this.showToast(`Grammatica Sync voltooid! ${results.errors > 0 ? results.errors + ' documenten mislukt.' : ''}`);
-        this.navigateTo('menu');
+        this.save(); this.renderSyncManager();
+        
+        if (results.errors === 0) {
+           this.showToast(`Grammar Sync success! All active documents updated.`);
+           this.navigateTo('menu');
+        } else {
+           this.showToast(`Grammar Sync complete, but found ${results.errors} errors. Check RED status markers.`, true);
+        }
       }
 
-      // GRAMMAR LIST & READER (Persisted personalisation Option B)
       renderDocList() {
         const container = document.getElementById('active-doc-list');
         if (this.docs.length === 0) { container.innerHTML = '<p style="color:var(--text-muted); font-size:14px; text-align:center; padding: 24px;">Geen documenten. Sync ze via Sync Center.</p>'; return; }
@@ -509,10 +559,9 @@
         this.navigateTo('grammar-reader');
       }
 
-      // FILTER
       renderFilters() {
         const container = document.getElementById('vocab-filter-list');
-        if (this.cards.length === 0) { container.innerHTML = '<p style="font-size:14px; text-align:center; padding:16px;">Geen data. Sync je Sync Center.</p>'; return; }
+        if (this.cards.length === 0) { container.innerHTML = '<p style="font-size:14px; text-align:center; padding:16px;">Geen data. Sync je Center.</p>'; return; }
         const structure = {};
         this.cards.forEach(c => { const main = c.mainCat || 'algemeen'; if (!structure[main]) structure[main] = new Set(); structure[main].add(c.subCat || 'algemeen'); });
         let html = '';
@@ -594,10 +643,8 @@
         }, {passive:true});
       }
 
-      // Existing parsing logic
       parseCSV(t) { return t.split('\n').map(row => { let r=[], q=false, c=''; for(let i=0; i<row.length; i++){ let ch=row[i]; if(ch==='"'){ q=!q; }else if(ch===',' && !q){ r.push(c); c=''; }else{ c+=ch; } } r.push(c); return r; }); }
     
-      // BACKUP/HERSTEL (Personalisation preserved)
       exportData() {
         const data = { v: this.cards, cats: this.vocabSyncs, gSyncs: this.grammarSyncs, docs: this.docs };
         const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
@@ -611,9 +658,9 @@
         reader.onload = (e) => {
           try {
             const d = JSON.parse(e.target.result);
-            if (d.v) { this.cards=d.v; this.vocabSyncs=d.cats||[]; this.grammarSyncs=d.gSyncs||[]; this.docs=d.docs||[]; this.save(); this.showToast('Data hersteld!'); this.navigateTo('menu'); }
-            else { this.showToast('Ongeldige JSON.'); }
-          } catch (e) { this.showToast('JSON leesfout.'); }
+            if (d.v) { this.cards=d.v; this.vocabSyncs=d.cats||[]; this.grammarSyncs=d.gSyncs||[]; this.docs=d.docs||[]; this.save(); this.showToast('Data restored!'); this.navigateTo('menu'); }
+            else { this.showToast('Invalid JSON.'); }
+          } catch (e) { this.showToast('JSON read error.'); }
         };
         reader.readAsText(event.target.files[0]);
       }
