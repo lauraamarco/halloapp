@@ -210,7 +210,7 @@
             <div id="card-ex-nl" style="font-weight:bold; margin-bottom:4px;" class="preserved-breaks"></div>
             <div id="card-ex-en" style="font-style:italic; color:var(--text-muted);" class="preserved-breaks"></div>
           </div>
-          <div id="card-notes" class="card-notes" style="font-size:13px; border-top:1px dashed #CCC; padding-top:8px;"></div>
+          <div id="card-notes" class="card-notes" style="font-size:13px; border-top:1px dashed #CCC; padding-top:8px; white-space: pre-wrap;"></div>
         </div>
       </div>
     </div>
@@ -732,8 +732,50 @@
         }, {passive:true});
       }
 
-      parseCSV(t) { return t.split('\n').map(row => { let r=[], q=false, c=''; for(let i=0; i<row.length; i++){ let ch=row[i]; if(ch==='"'){ q=!q; }else if(ch===',' && !q){ r.push(c); c=''; }else{ c+=ch; } } r.push(c); return r; }); }
-    
+parseCSV(text) {
+    const rows = [];
+    let currentRow = [];
+    let currentCell = '';
+    let inQuotes = false;
+
+    // Standardize line endings
+    const str = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+    for (let i = 0; i < str.length; i++) {
+      const char = str[i];
+      const nextChar = str[i + 1];
+
+      if (char === '"') {
+        if (inQuotes && nextChar === '"') {
+          // Double quotes inside quoted text convert to a single quote
+          currentCell += '"';
+          i++; 
+        } else {
+          // Toggle quote state
+          inQuotes = !inQuotes;
+        }
+      } else if (char === ',' && !inQuotes) {
+        // End of column
+        currentRow.push(currentCell);
+        currentCell = '';
+      } else if (char === '\n' && !inQuotes) {
+        // End of row
+        currentRow.push(currentCell);
+        rows.push(currentRow);
+        currentRow = [];
+        currentCell = '';
+      } else {
+        currentCell += char;
+      }
+    }
+
+    if (currentCell !== '' || currentRow.length > 0) {
+      currentRow.push(currentCell);
+      rows.push(currentRow);
+    }
+
+    return rows;
+  }    
       exportData() {
         const data = { v: this.cards, cats: this.vocabSyncs, gSyncs: this.grammarSyncs, docs: this.docs };
         const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
