@@ -1,4 +1,3 @@
-<!-- Full index.html code for GitHub deployment[cite: 2] -->
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -194,13 +193,15 @@
       padding: 10px 0;
     }
 
-    /* OPTIMIZED 3D CARD STYLES FOR CHROME (DESKTOP + IOS/ANDROID) */
+    /* OPTIMIZED FLEXIBLE 3D CARD CONTAINER */
     .flashcard-container { 
       perspective: 1200px; 
       -webkit-perspective: 1200px;
       width: 100%; 
       max-width: 380px; 
-      height: 360px;
+      height: 100%;
+      min-height: 360px;
+      max-height: calc(100vh - 210px);
       position: relative;
       cursor: grab;
       user-select: none;
@@ -229,6 +230,7 @@
     .flashcard.slide-out-left.flipped { transform: translateX(-140%) rotateY(180deg) rotate(-8deg); opacity: 0; }
     .flashcard.slide-out-right.flipped { transform: translateX(140%) rotateY(180deg) rotate(8deg); opacity: 0; }
 
+    /* CARD FACES WITH SMOOTH VERTICAL SCROLLING */
     .card-face { 
       width: 100%; 
       height: 100%;
@@ -238,18 +240,19 @@
       backface-visibility: hidden; 
       -webkit-backface-visibility: hidden; 
       border-radius: var(--radius-card); 
-      padding: 28px 24px; 
+      padding: 24px 20px; 
       background: white; 
       border: 1px solid var(--border-color); 
       box-shadow: var(--shadow-soft); 
       display: flex; 
       flex-direction: column; 
       justify-content: space-between; 
-      text-align: left; 
       transform-style: preserve-3d;
       -webkit-transform-style: preserve-3d;
       will-change: transform;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
     }
 
     .card-face.front {
@@ -283,10 +286,11 @@
       font-weight: bold;
       line-height: 1.3;
       white-space: pre-wrap;
+      margin-bottom: 12px;
     }
     
     .preserved-breaks { white-space: pre-wrap; font-family: 'Elms Sans', sans-serif; } 
-    .card-notes { font-family: 'Elms Sans', sans-serif; font-size: 13px; border-top: 1px dashed #CCC; padding-top: 8px; white-space: pre-wrap; }
+    .card-notes { font-family: 'Elms Sans', sans-serif; font-size: 13px; border-top: 1px dashed #CCC; padding-top: 10px; margin-top: 12px; white-space: pre-wrap; }
     .card-notes a { color: var(--accent-terracotta); text-decoration: underline; }
     
     #flashcard-controls { display:flex; gap:16px; margin-top: auto; padding-top: 12px; padding-bottom: 12px; flex-shrink: 0; }
@@ -311,12 +315,12 @@
     .btn-danger-sm { background: #fee2e2; color: #b91c1c; font-size: 12px; min-height: 32px; padding: 0 10px; border-radius: 8px; width: auto; font-weight: bold; border:none; cursor:pointer;}
     .btn-danger-sm:active { background: #fecaca; }
 
-    /* Sticky Header for Reader with Blur Effect */
+    /* Sticky Header for Reader */
     .reader-sticky-header {
       position: sticky;
       top: 0;
       z-index: 20;
-      background: rgba(250, 246, 240, 0.82);
+      background: rgba(250, 246, 240, 0.88);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       padding: 8px 4px 16px 4px;
@@ -361,8 +365,6 @@
     .doc-content-view i, .doc-content-view em { font-style: italic !important; }
     .doc-content-view u { text-decoration: underline !important; }
     .doc-content-view span, .doc-content-view p { white-space: pre-wrap; }
-
-    .doc-content-view > h1:first-child { display: none !important; }
 
     .doc-content-view ul, .doc-content-view ol {
       padding-left: 24px !important;
@@ -466,7 +468,7 @@
           <div class="card-face back">
             <div id="card-translation"></div>
             
-            <div style="background:#FAF6F0; padding:14px 16px; border-radius:12px; font-size:14px; margin: 16px 0;">
+            <div style="background:#FAF6F0; padding:14px 16px; border-radius:12px; font-size:14px; margin: 8px 0;">
               <div id="card-ex-nl" style="font-weight:bold; margin-bottom:12px; padding-bottom:10px; border-bottom: 1px dashed var(--border-color);" class="preserved-breaks"></div>
               <div id="card-ex-en" style="font-style:italic; color:var(--text-muted);" class="preserved-breaks"></div>
             </div>
@@ -546,7 +548,7 @@
     <div style="text-align: left; background:#e0f2fe; padding:16px; border-radius:12px; border:1px solid #0ea5e9; margin-bottom:16px;">
       <h3 style="color:#0369a1; margin-bottom:8px;">2. Manage Grammar Link</h3>
       <p style="font-size: 13px; color: #0369a1; margin-bottom: 8px;">
-        Add your Google Doc web link below. The app automatically extracts each section title using your <strong>Heading 1</strong> / <strong>Encabezado 1</strong> elements!
+        Add your Google Doc web link below. The app automatically extracts each section title using your <strong>Heading 1</strong> elements!
       </p>
       <div id="sync-grammar-active-list" style="margin: 12px 0;"></div>
       <button class="btn btn-primary" style="background:#0ea5e9; border:none; height:40px; font-size:14px;" onclick="app.syncAllGrammar()">
@@ -586,7 +588,9 @@
         this.currentIndex = 0;
         
         this.startX = 0;
+        this.startY = 0;
         this.isDragging = false;
+        this.isVerticalScroll = false;
         this.dragDistance = 0;
         this.swipeZoneActive = false;
         
@@ -784,7 +788,8 @@
                 const title = h1.textContent.trim();
                 if (!title) return;
 
-                let sectionHtml = h1.outerHTML;
+                // Extract content strictly AFTER the H1 tag to avoid duplicate headings
+                let sectionHtml = '';
                 let sibling = h1.nextElementSibling;
 
                 while (sibling && sibling.tagName !== 'H1') {
@@ -851,8 +856,19 @@
       openDoc(title) {
         const d = this.docs.find(doc => doc.title.toLowerCase() === title.toLowerCase());
         if (!d) return;
-        document.getElementById('grammar-doc-title').textContent = d.title.charAt(0).toUpperCase()+d.title.slice(1);
-        document.getElementById('grammar-doc-body').innerHTML = d.html;
+        
+        document.getElementById('grammar-doc-title').textContent = d.title.charAt(0).toUpperCase() + d.title.slice(1);
+        const bodyContainer = document.getElementById('grammar-doc-body');
+        bodyContainer.innerHTML = d.html;
+        
+        // Clean any initial duplicate heading inside the rendered content body
+        const firstElem = bodyContainer.firstElementChild;
+        if (firstElem) {
+          if (['H1', 'H2'].includes(firstElem.tagName) || firstElem.textContent.trim().toLowerCase() === d.title.toLowerCase()) {
+            firstElem.remove();
+          }
+        }
+        
         this.navigateTo('grammar-reader');
       }
 
@@ -920,9 +936,11 @@
         const c = this.activeDeck[this.currentIndex];
         const currentCard = document.getElementById('flashcard-current');
         
-        // Reset inline transforms cleanly
+        // Reset inline transforms and scroll position
         currentCard.style.transform = '';
         currentCard.classList.remove('flipped');
+        currentCard.querySelectorAll('.card-face').forEach(face => face.scrollTop = 0);
+
         document.getElementById('progress').textContent = `${this.currentIndex + 1} / ${this.activeDeck.length}`;
         document.getElementById('card-word').textContent = c.word;
         document.getElementById('card-translation').textContent = c.trans;
@@ -939,13 +957,13 @@
       }
 
       handleCardClick(event) {
-        if (event.target.tagName === 'A' || Math.abs(this.dragDistance) > 10) return;
+        if (event.target.tagName === 'A' || Math.abs(this.dragDistance) > 10 || this.isVerticalScroll) return;
         this.flipCard();
       }
 
       flipCard() { 
         const card = document.getElementById('flashcard-current');
-        card.style.transform = ''; // Clear inline JS swipe transform so CSS takes over cleanly in Chrome
+        card.style.transform = ''; 
         card.classList.toggle('flipped'); 
       }
       
@@ -981,18 +999,32 @@
         const zone = document.getElementById('flashcard-swipe-zone');
         const card = document.getElementById('flashcard-current');
 
-        const onStart = (e, clientX) => {
+        const onStart = (e, clientX, clientY) => {
           if (!this.swipeZoneActive) return;
           this.startX = clientX;
+          this.startY = clientY;
           this.isDragging = true;
+          this.isVerticalScroll = false;
           this.dragDistance = 0;
           card.style.transition = 'none';
         };
 
-        const onMove = (e, clientX) => {
+        const onMove = (e, clientX, clientY) => {
           if (!this.isDragging || !this.swipeZoneActive) return;
-          this.dragDistance = clientX - this.startX;
-          if (Math.abs(this.dragDistance) > 3) {
+          const deltaX = clientX - this.startX;
+          const deltaY = clientY - this.startY;
+
+          // Detect vertical scrolling vs horizontal card swiping
+          if (!this.isVerticalScroll && Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 8) {
+            this.isVerticalScroll = true;
+            card.style.transform = '';
+            return;
+          }
+
+          if (this.isVerticalScroll) return;
+
+          this.dragDistance = deltaX;
+          if (Math.abs(this.dragDistance) > 5) {
             if (e && e.cancelable) e.preventDefault();
             const baseFlip = card.classList.contains('flipped') ? 'rotateY(180deg)' : 'rotateY(0deg)';
             card.style.transform = `translateX(${this.dragDistance}px) rotate(${this.dragDistance * 0.03}deg) ${baseFlip}`;
@@ -1004,24 +1036,26 @@
           this.isDragging = false;
           card.style.transition = '';
           
-          if (this.dragDistance < -60) {
-            this.nextCard();
-          } else if (this.dragDistance > 60) {
-            this.prevCard();
-          } else {
-            card.style.transform = '';
+          if (!this.isVerticalScroll) {
+            if (this.dragDistance < -60) {
+              this.nextCard();
+            } else if (this.dragDistance > 60) {
+              this.prevCard();
+            } else {
+              card.style.transform = '';
+            }
           }
         };
 
-        zone.addEventListener('touchstart', e => onStart(e, e.touches[0].clientX), {passive:true});
-        zone.addEventListener('touchmove', e => onMove(e, e.touches[0].clientX), {passive:true});
+        zone.addEventListener('touchstart', e => onStart(e, e.touches[0].clientX, e.touches[0].clientY), {passive:true});
+        zone.addEventListener('touchmove', e => onMove(e, e.touches[0].clientX, e.touches[0].clientY), {passive:false});
         zone.addEventListener('touchend', onEnd, {passive:true});
 
         zone.addEventListener('mousedown', e => {
           if (e.target.tagName !== 'A') e.preventDefault();
-          onStart(e, e.clientX);
+          onStart(e, e.clientX, e.clientY);
         });
-        window.addEventListener('mousemove', e => onMove(e, e.clientX));
+        window.addEventListener('mousemove', e => onMove(e, e.clientX, e.clientY));
         window.addEventListener('mouseup', onEnd);
       }
 
