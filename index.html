@@ -95,7 +95,7 @@
       --sat: env(safe-area-inset-top, 0px);
       --sab: env(safe-area-inset-bottom, 0px);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
     
     html, body {
       height: 100%;
@@ -189,40 +189,53 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow-y: auto;
+      overflow: hidden;
       padding: 10px 0;
     }
 
+    /* OPTIMIZED 3D CARD STYLES FOR CHROME (DESKTOP + IOS/ANDROID) */
     .flashcard-container { 
-      perspective: 1000px; 
+      perspective: 1200px; 
+      -webkit-perspective: 1200px;
       width: 100%; 
       max-width: 380px; 
+      height: 360px;
       position: relative;
       cursor: grab;
       user-select: none;
       -webkit-user-drag: none;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
     }
     .flashcard-container:active { cursor: grabbing; }
 
     .flashcard { 
       width: 100%; 
+      height: 100%;
       position: relative; 
       transform-style: preserve-3d; 
-      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s ease; 
-      transform: translateX(0); 
+      -webkit-transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease; 
+      transform: rotateY(0deg); 
       user-select: none;
+      will-change: transform;
     }
     
     .flashcard.flipped { transform: rotateY(180deg); }
     
-    .flashcard.slide-out-left { transform: translateX(-140%) rotate(-5deg); opacity: 0; }
-    .flashcard.slide-out-right { transform: translateX(140%) rotate(5deg); opacity: 0; }
-    .flashcard.slide-out-left.flipped { transform: translateX(-140%) rotateY(180deg) rotate(-5deg); opacity: 0; }
-    .flashcard.slide-out-right.flipped { transform: translateX(140%) rotateY(180deg) rotate(5deg); opacity: 0; }
+    .flashcard.slide-out-left { transform: translateX(-140%) rotate(-8deg); opacity: 0; }
+    .flashcard.slide-out-right { transform: translateX(140%) rotate(8deg); opacity: 0; }
+    .flashcard.slide-out-left.flipped { transform: translateX(-140%) rotateY(180deg) rotate(-8deg); opacity: 0; }
+    .flashcard.slide-out-right.flipped { transform: translateX(140%) rotateY(180deg) rotate(8deg); opacity: 0; }
 
     .card-face { 
       width: 100%; 
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
       backface-visibility: hidden; 
+      -webkit-backface-visibility: hidden; 
       border-radius: var(--radius-card); 
       padding: 28px 24px; 
       background: white; 
@@ -232,19 +245,24 @@
       flex-direction: column; 
       justify-content: space-between; 
       text-align: left; 
-      min-height: 320px;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      will-change: transform;
+      overflow-y: auto;
+    }
+
+    .card-face.front {
+      transform: rotateY(0deg) translateZ(1px);
+      -webkit-transform: rotateY(0deg) translateZ(1px);
+      z-index: 2;
     }
 
     .card-face.back { 
-      position: absolute;
-      top: 0;
-      left: 0;
-      transform: rotateY(180deg); 
+      transform: rotateY(180deg) translateZ(1px); 
+      -webkit-transform: rotateY(180deg) translateZ(1px);
       background: #FFFDF9; 
+      z-index: 1;
     }
-
-    .flashcard.flipped .card-face.front { position: absolute; top:0; left:0; opacity: 0; }
-    .flashcard.flipped .card-face.back { position: relative; opacity: 1; }
     
     .card-main-text { 
       font-family: 'Mozilla Text', serif; 
@@ -338,13 +356,11 @@
       user-select: text;
     }
 
-    /* Preserve Google Doc text formatting rules */
     .doc-content-view b, .doc-content-view strong { font-weight: bold !important; }
     .doc-content-view i, .doc-content-view em { font-style: italic !important; }
     .doc-content-view u { text-decoration: underline !important; }
-    .doc-content-view span, .doc-content-view p { white-space: pre-wrap; } /* Preserves tab indentations and whitespace */
+    .doc-content-view span, .doc-content-view p { white-space: pre-wrap; }
 
-    /* Hide redundant repeated h1 at top of rendered GDoc body */
     .doc-content-view > h1:first-child { display: none !important; }
 
     .doc-content-view ul, .doc-content-view ol {
@@ -756,7 +772,6 @@
             const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
             const contentContainer = doc.getElementById('contents') || doc.body;
             
-            // Extract and preserve all Google Doc embedded CSS styles (bold, font sizes, colors, italics, underline)
             const styleTags = Array.from(doc.querySelectorAll('style')).map(s => s.outerHTML).join('\n');
 
             this.docs = this.docs.filter(d => d.sourceUrl !== sync.url);
@@ -776,7 +791,6 @@
                   sibling = sibling.nextElementSibling;
                 }
 
-                // Attach GDoc CSS stylesheet rules to section html
                 this.docs.push({ title, html: styleTags + sectionHtml, sourceUrl: sync.url });
               });
             } else {
@@ -905,6 +919,8 @@
         const c = this.activeDeck[this.currentIndex];
         const currentCard = document.getElementById('flashcard-current');
         
+        // Reset inline transforms cleanly
+        currentCard.style.transform = '';
         currentCard.classList.remove('flipped');
         document.getElementById('progress').textContent = `${this.currentIndex + 1} / ${this.activeDeck.length}`;
         document.getElementById('card-word').textContent = c.word;
@@ -926,7 +942,11 @@
         this.flipCard();
       }
 
-      flipCard() { document.getElementById('flashcard-current').classList.toggle('flipped'); }
+      flipCard() { 
+        const card = document.getElementById('flashcard-current');
+        card.style.transform = ''; // Clear inline JS swipe transform so CSS takes over cleanly in Chrome
+        card.classList.toggle('flipped'); 
+      }
       
       openGrammarDocFromFlash(docTitle) {
         this.openDoc(docTitle);
@@ -941,6 +961,7 @@
         const card = document.getElementById('flashcard-current');
         if (card.classList.contains('slide-out-left') || card.classList.contains('slide-out-right')) return;
         
+        card.style.transform = '';
         card.classList.add(direction === 1 ? 'slide-out-left' : 'slide-out-right');
         await new Promise(r => setTimeout(r, 380));
         
@@ -971,8 +992,9 @@
           if (!this.isDragging || !this.swipeZoneActive) return;
           this.dragDistance = clientX - this.startX;
           if (Math.abs(this.dragDistance) > 3) {
-            if (e && e.preventDefault) e.preventDefault();
-            card.style.transform = `translateX(${this.dragDistance}px) rotate(${this.dragDistance * 0.03}deg) ${card.classList.contains('flipped') ? 'rotateY(180deg)' : ''}`;
+            if (e && e.cancelable) e.preventDefault();
+            const baseFlip = card.classList.contains('flipped') ? 'rotateY(180deg)' : 'rotateY(0deg)';
+            card.style.transform = `translateX(${this.dragDistance}px) rotate(${this.dragDistance * 0.03}deg) ${baseFlip}`;
           }
         };
 
@@ -986,7 +1008,7 @@
           } else if (this.dragDistance > 60) {
             this.prevCard();
           } else {
-            card.style.transform = card.classList.contains('flipped') ? 'rotateY(180deg)' : 'none';
+            card.style.transform = '';
           }
         };
 
