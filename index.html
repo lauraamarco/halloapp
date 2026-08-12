@@ -103,7 +103,7 @@
       overflow: hidden;
       background-color: var(--bg-main);
       color: var(--text-dark);
-      font-family: 'Elms Sans', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+      font-family: 'Elms Sans', -apple-system, BlinkMacSystemFont, Arial, sans-serif !important;
     }
 
     body {
@@ -128,15 +128,15 @@
     #screen-flashcard { display: none; flex-direction: column; height: 100%; }
     #screen-flashcard.active { display: flex; }
 
-    h1 { font-size: 28px; font-weight: bold; }
-    h2 { font-size: 20px; font-weight: 600; text-align: center; margin-bottom: 24px; }
+    h1 { font-size: 28px; font-weight: bold; font-family: 'Elms Sans', sans-serif !important; }
+    h2 { font-size: 20px; font-weight: 600; text-align: center; margin-bottom: 24px; font-family: 'Elms Sans', sans-serif !important; }
     
     #screen-splash { justify-content: center; align-items: center; text-align: center; cursor: pointer; }
-    #screen-splash h1 { font-family: 'Elms Sans', sans-serif; color: var(--accent-terracotta); font-size: 36px; font-weight: bold; }
+    #screen-splash h1 { font-family: 'Elms Sans', sans-serif !important; color: var(--accent-terracotta); font-size: 36px; font-weight: bold; }
     .splash-instructions { display: flex; flex-direction: column; align-items: center; gap: 12px; color: var(--text-muted); animation: pulse 2s infinite; margin-top: 40px;}
     @keyframes pulse { 0%, 100% { opacity: 0.6; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-6px); } }
     
-    .btn { min-height: 52px; padding: 12px 20px; border-radius: var(--radius-btn); border: none; font-size: 16px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 100%; text-decoration: none; transition: background 0.2s, transform 0.1s; font-family: 'Elms Sans', sans-serif; }
+    .btn { min-height: 52px; padding: 12px 20px; border-radius: var(--radius-btn); border: none; font-size: 16px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 100%; text-decoration: none; transition: background 0.2s, transform 0.1s; font-family: 'Elms Sans', sans-serif !important; }
     .btn:active { transform: scale(0.98); }
     .btn-primary { background: linear-gradient(135deg, var(--accent-terracotta), var(--accent-warm-orange)); color: white; box-shadow: 0 4px 12px rgba(200, 90, 50, 0.3); }
     .btn-secondary { background: white; color: var(--text-dark); border: 1px solid var(--border-color); }
@@ -145,8 +145,8 @@
     
     .menu-grid { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; text-align: center;}
     .menu-card { background: var(--card-bg); border-radius: 16px; padding: 24px; text-align: center; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); cursor: pointer; }
-    .menu-card h3 { font-size: 22px; margin-bottom: 4px; color: var(--text-dark); }
-    .menu-card p { font-size: 15px; color: var(--text-muted); }
+    .menu-card h3 { font-size: 22px; margin-bottom: 4px; color: var(--text-dark); font-family: 'Elms Sans', sans-serif !important; }
+    .menu-card p { font-size: 15px; color: var(--text-muted); font-family: 'Elms Sans', sans-serif !important; }
 
     .grammar-doc-card { 
       background: var(--card-bg); 
@@ -160,14 +160,14 @@
       transition: transform 0.1s;
     }
     .grammar-doc-card:active { transform: scale(0.98); }
-    .grammar-doc-card h3 { font-size: 18px; color: var(--text-dark); font-weight: 600; margin: 0; }
+    .grammar-doc-card h3 { font-size: 18px; color: var(--text-dark); font-weight: 600; margin: 0; font-family: 'Elms Sans', sans-serif !important; }
 
     #menu-sync-btn-container { margin-top: auto; padding: 20px; text-align: center;}
     .sync-btn-sm { font-size: 14px; min-height: 40px; border-radius: 20px; border: 2px dashed var(--accent-terracotta); background: #FFF3E0; color: var(--accent-terracotta); font-weight: bold; width: auto; padding: 0 20px;}
 
     .form-group { margin-bottom: 16px; text-align: left; }
-    label { font-weight: bold; display: block; margin-bottom: 6px; font-size: 14px;}
-    .form-control { width: 100%; min-height: 44px; border-radius: 8px; border: 1px solid var(--border-color); padding: 0 12px; font-size: 15px; background: white; font-family: 'Elms Sans', sans-serif;}
+    label { font-weight: bold; display: block; margin-bottom: 6px; font-size: 14px; font-family: 'Elms Sans', sans-serif !important; }
+    .form-control { width: 100%; min-height: 44px; border-radius: 8px; border: 1px solid var(--border-color); padding: 0 12px; font-size: 15px; background: white; font-family: 'Elms Sans', sans-serif !important;}
     
     .filter-scroll-area { flex: 1; overflow-y: auto; padding-right: 4px; margin-bottom: 12px; }
     .filter-group { text-align: left; }
@@ -193,7 +193,6 @@
       padding: 10px 0;
     }
 
-    /* OPTIMIZED FLEXIBLE 3D CARD CONTAINER */
     .flashcard-container { 
       perspective: 1200px; 
       -webkit-perspective: 1200px;
@@ -230,7 +229,7 @@
     .flashcard.slide-out-left.flipped { transform: translateX(-140%) rotateY(180deg) rotate(-8deg); opacity: 0; }
     .flashcard.slide-out-right.flipped { transform: translateX(140%) rotateY(180deg) rotate(8deg); opacity: 0; }
 
-    /* CARD FACES WITH SMOOTH VERTICAL SCROLLING */
+    /* CENTER-ALIGNED CARD FACES */
     .card-face { 
       width: 100%; 
       height: 100%;
@@ -247,6 +246,7 @@
       display: flex; 
       flex-direction: column; 
       justify-content: space-between; 
+      text-align: center;
       transform-style: preserve-3d;
       -webkit-transform-style: preserve-3d;
       will-change: transform;
@@ -268,8 +268,9 @@
       z-index: 1;
     }
     
+    /* MOZILLA TEXT FOR FLASHCARD WORDS & TRANSLATIONS */
     .card-main-text { 
-      font-family: 'Mozilla Text', serif; 
+      font-family: 'Mozilla Text', serif !important; 
       font-size: 26px; 
       font-weight: bold; 
       text-align: center; 
@@ -279,7 +280,7 @@
     }
 
     #card-translation {
-      font-family: 'Mozilla Text', serif;
+      font-family: 'Mozilla Text', serif !important;
       font-size: 24px;
       color: var(--accent-terracotta);
       text-align: center;
@@ -289,8 +290,8 @@
       margin-bottom: 12px;
     }
     
-    .preserved-breaks { white-space: pre-wrap; font-family: 'Elms Sans', sans-serif; } 
-    .card-notes { font-family: 'Elms Sans', sans-serif; font-size: 13px; border-top: 1px dashed #CCC; padding-top: 10px; margin-top: 12px; white-space: pre-wrap; }
+    .preserved-breaks { white-space: pre-wrap; font-family: 'Elms Sans', sans-serif !important; text-align: center; } 
+    .card-notes { font-family: 'Elms Sans', sans-serif !important; font-size: 13px; border-top: 1px dashed #CCC; padding-top: 10px; margin-top: 12px; white-space: pre-wrap; text-align: center; }
     .card-notes a { color: var(--accent-terracotta); text-decoration: underline; }
     
     #flashcard-controls { display:flex; gap:16px; margin-top: auto; padding-top: 12px; padding-bottom: 12px; flex-shrink: 0; }
@@ -315,12 +316,12 @@
     .btn-danger-sm { background: #fee2e2; color: #b91c1c; font-size: 12px; min-height: 32px; padding: 0 10px; border-radius: 8px; width: auto; font-weight: bold; border:none; cursor:pointer;}
     .btn-danger-sm:active { background: #fecaca; }
 
-    /* Sticky Header for Reader */
+    /* Reader Header */
     .reader-sticky-header {
       position: sticky;
       top: 0;
       z-index: 20;
-      background: rgba(250, 246, 240, 0.88);
+      background: rgba(250, 246, 240, 0.95);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       padding: 8px 4px 16px 4px;
@@ -333,29 +334,40 @@
 
     .reader-doc-title {
       color: var(--accent-terracotta);
-      font-size: 24px;
+      font-size: 26px;
       font-weight: bold;
       line-height: 1.25;
       word-break: break-word;
       text-align: left;
+      font-family: 'Elms Sans', sans-serif !important;
     }
 
+    /* GRAMMAR READER - NO WHITE CARD CONTAINER */
     .doc-content-view { 
-      background: white; 
-      border-radius: var(--radius-card); 
-      padding: 20px 18px; 
-      border: 1px solid var(--border-color); 
-      box-shadow: var(--shadow-sm); 
+      background: transparent; 
+      border-radius: 0; 
+      padding: 0 4px; 
+      border: none; 
+      box-shadow: none; 
       line-height: 1.6; 
       text-align: left; 
       margin-bottom: 24px; 
-      font-family: 'Elms Sans', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
       overflow-x: auto;
       width: 100%;
       tab-size: 4;
     }
     
-    .doc-content-view * {
+    /* OVERRIDE GOOGLE DOC INLINE STYLES WITH ELMS SANS */
+    .doc-content-view,
+    .doc-content-view *,
+    .doc-content-view span,
+    .doc-content-view p,
+    .doc-content-view li,
+    .doc-content-view h1,
+    .doc-content-view h2,
+    .doc-content-view h3,
+    .doc-content-view h4 {
+      font-family: 'Elms Sans', -apple-system, BlinkMacSystemFont, Arial, sans-serif !important;
       max-width: 100%;
       box-sizing: border-box;
       user-select: text;
@@ -371,7 +383,7 @@
       margin: 12px 0 !important;
     }
 
-    .toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #2D3748; color: white; padding: 12px 20px; border-radius: 30px; font-size: 14px; z-index: 3000; transition: transform 0.3s; pointer-events: none; }
+    .toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #2D3748; color: white; padding: 12px 20px; border-radius: 30px; font-size: 14px; z-index: 3000; transition: transform 0.3s; pointer-events: none; font-family: 'Elms Sans', sans-serif !important; }
     .toast.show { transform: translateX(-50%) translateY(0); }
   </style>
 </head>
@@ -468,7 +480,7 @@
           <div class="card-face back">
             <div id="card-translation"></div>
             
-            <div style="background:#FAF6F0; padding:14px 16px; border-radius:12px; font-size:14px; margin: 8px 0;">
+            <div style="background:#FAF6F0; padding:14px 16px; border-radius:12px; font-size:14px; margin: 8px 0; text-align:center;">
               <div id="card-ex-nl" style="font-weight:bold; margin-bottom:12px; padding-bottom:10px; border-bottom: 1px dashed var(--border-color);" class="preserved-breaks"></div>
               <div id="card-ex-en" style="font-style:italic; color:var(--text-muted);" class="preserved-breaks"></div>
             </div>
@@ -788,7 +800,6 @@
                 const title = h1.textContent.trim();
                 if (!title) return;
 
-                // Extract content strictly AFTER the H1 tag to avoid duplicate headings
                 let sectionHtml = '';
                 let sibling = h1.nextElementSibling;
 
@@ -861,7 +872,6 @@
         const bodyContainer = document.getElementById('grammar-doc-body');
         bodyContainer.innerHTML = d.html;
         
-        // Clean any initial duplicate heading inside the rendered content body
         const firstElem = bodyContainer.firstElementChild;
         if (firstElem) {
           if (['H1', 'H2'].includes(firstElem.tagName) || firstElem.textContent.trim().toLowerCase() === d.title.toLowerCase()) {
@@ -936,7 +946,6 @@
         const c = this.activeDeck[this.currentIndex];
         const currentCard = document.getElementById('flashcard-current');
         
-        // Reset inline transforms and scroll position
         currentCard.style.transform = '';
         currentCard.classList.remove('flipped');
         currentCard.querySelectorAll('.card-face').forEach(face => face.scrollTop = 0);
@@ -1014,7 +1023,6 @@
           const deltaX = clientX - this.startX;
           const deltaY = clientY - this.startY;
 
-          // Detect vertical scrolling vs horizontal card swiping
           if (!this.isVerticalScroll && Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 8) {
             this.isVerticalScroll = true;
             card.style.transform = '';
