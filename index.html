@@ -191,6 +191,7 @@
       justify-content: center;
       overflow: hidden;
       padding: 10px 0;
+      min-height: 0;
     }
 
     .flashcard-container { 
@@ -199,7 +200,6 @@
       width: 100%; 
       max-width: 380px; 
       height: 100%;
-      min-height: 360px;
       max-height: calc(100vh - 210px);
       position: relative;
       cursor: grab;
@@ -229,7 +229,6 @@
     .flashcard.slide-out-left.flipped { transform: translateX(-140%) rotateY(180deg) rotate(-8deg); opacity: 0; }
     .flashcard.slide-out-right.flipped { transform: translateX(140%) rotateY(180deg) rotate(8deg); opacity: 0; }
 
-    /* CENTER-ALIGNED CARD FACES */
     .card-face { 
       width: 100%; 
       height: 100%;
@@ -239,7 +238,7 @@
       backface-visibility: hidden; 
       -webkit-backface-visibility: hidden; 
       border-radius: var(--radius-card); 
-      padding: 24px 20px; 
+      padding: 20px 18px; 
       background: white; 
       border: 1px solid var(--border-color); 
       box-shadow: var(--shadow-soft); 
@@ -251,9 +250,14 @@
       -webkit-transform-style: preserve-3d;
       will-change: transform;
       overflow-y: auto;
+      overscroll-behavior: contain;
       -webkit-overflow-scrolling: touch;
       touch-action: pan-y;
     }
+
+    .card-face::-webkit-scrollbar { width: 5px; }
+    .card-face::-webkit-scrollbar-track { background: transparent; }
+    .card-face::-webkit-scrollbar-thumb { background: rgba(200, 90, 50, 0.3); border-radius: 4px; }
 
     .card-face.front {
       transform: rotateY(0deg) translateZ(1px);
@@ -267,8 +271,20 @@
       background: #FFFDF9; 
       z-index: 1;
     }
+
+    /* SMALL TERRACOTTA WORD TYPE TAG */
+    .card-word-type {
+      color: var(--accent-terracotta);
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      letter-spacing: 0.6px;
+      text-transform: lowercase;
+      margin-bottom: 6px;
+      flex-shrink: 0;
+      opacity: 0.9;
+    }
     
-    /* MOZILLA TEXT FOR FLASHCARD WORDS & TRANSLATIONS */
     .card-main-text { 
       font-family: 'Mozilla Text', serif !important; 
       font-size: 26px; 
@@ -316,7 +332,6 @@
     .btn-danger-sm { background: #fee2e2; color: #b91c1c; font-size: 12px; min-height: 32px; padding: 0 10px; border-radius: 8px; width: auto; font-weight: bold; border:none; cursor:pointer;}
     .btn-danger-sm:active { background: #fecaca; }
 
-    /* Reader Header */
     .reader-sticky-header {
       position: sticky;
       top: 0;
@@ -342,7 +357,6 @@
       font-family: 'Elms Sans', sans-serif !important;
     }
 
-    /* GRAMMAR READER - NO WHITE CARD CONTAINER */
     .doc-content-view { 
       background: transparent; 
       border-radius: 0; 
@@ -357,7 +371,6 @@
       tab-size: 4;
     }
     
-    /* OVERRIDE GOOGLE DOC INLINE STYLES WITH ELMS SANS */
     .doc-content-view,
     .doc-content-view *,
     .doc-content-view span,
@@ -443,9 +456,17 @@
     </div>
 
     <div class="filter-bottom-dock">
-      <div class="recency-filter-card" style="margin-bottom: 12px;">
-        <div style="display:flex; flex-direction:column; gap:6px; width:100%;">
-          <label for="filter-date-range" style="font-weight:bold; color:var(--text-dark); margin:0;">Datum filter / Date added:</label>
+      <div class="recency-filter-card" style="margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px;">
+        <div>
+          <label for="filter-level" style="font-weight:bold; color:var(--text-dark); margin:0 0 4px 0;">Level / Niveau:</label>
+          <select id="filter-level" class="form-control">
+            <option value="all" selected>All levels (Alles)</option>
+            <option value="Basic">Basic</option>
+            <option value="Advanced">Advanced</option>
+          </select>
+        </div>
+        <div>
+          <label for="filter-date-range" style="font-weight:bold; color:var(--text-dark); margin:0 0 4px 0;">Datum filter / Date added:</label>
           <select id="filter-date-range" class="form-control">
             <option value="all" selected>All time (Alles)</option>
             <option value="7">Last week (7 dagen)</option>
@@ -474,10 +495,12 @@
       <div class="flashcard-container" id="flashcard-swipe-zone">
         <div class="flashcard" id="flashcard-current" onclick="app.handleCardClick(event)">
           <div class="card-face front">
+            <div class="card-word-type" id="card-type-front"></div>
             <div class="card-main-text" id="card-word"></div>
             <p style="text-align:center; color:var(--text-muted); font-size:12px; margin-top:16px;">Tik om te draaien</p>
           </div>
           <div class="card-face back">
+            <div class="card-word-type" id="card-type-back"></div>
             <div id="card-translation"></div>
             
             <div style="background:#FAF6F0; padding:14px 16px; border-radius:12px; font-size:14px; margin: 8px 0; text-align:center;">
@@ -741,29 +764,31 @@
 
             rows.forEach((r, idx) => {
               if (idx === 0) return;
-              const word = r[1] ? r[1].trim() : '';
-              const trans = r[2] ? r[2].trim() : '';
+              
+              const level = (r[0] && r[0].trim()) ? r[0].trim() : 'Basic';
+              const subCat = (r[1] && r[1].trim()) ? r[1].trim() : 'algemeen';
+              const word = r[2] ? r[2].trim() : '';
+              const trans = r[3] ? r[3].trim() : '';
               if (!word || !trans) return; 
 
-              const subCat = (r[0] && r[0].trim()) ? r[0].trim() : 'algemeen';
-              const exNl = r[3] ? r[3].trim() : '';
-              const exEn = r[4] ? r[4].trim() : '';
-              const notes = r[5] ? r[5].trim() : '';
+              const exNl = r[4] ? r[4].trim() : '';
+              const exEn = r[5] ? r[5].trim() : '';
+              const notes = r[6] ? r[6].trim() : '';
               
               let dateAddedTimestamp = Date.now();
-              if (r[6] && r[6].trim() && !isNaN(Date.parse(r[6].trim()))) {
-                dateAddedTimestamp = new Date(r[6].trim()).getTime();
+              if (r[7] && r[7].trim() && !isNaN(Date.parse(r[7].trim()))) {
+                dateAddedTimestamp = new Date(r[7].trim()).getTime();
               }
               
               const cardData = { 
                 mainCat: cat.name, 
-                subCat, word, trans, exNl, exEn, notes,
+                level, subCat, word, trans, exNl, exEn, notes,
                 dateAdded: dateAddedTimestamp
               };
               
               const exIndex = this.cards.findIndex(c => c.word.toLowerCase() === word.toLowerCase() && c.mainCat === cat.name);
               if (exIndex >= 0) { 
-                if (!r[6] && this.cards[exIndex].dateAdded) cardData.dateAdded = this.cards[exIndex].dateAdded;
+                if (!r[7] && this.cards[exIndex].dateAdded) cardData.dateAdded = this.cards[exIndex].dateAdded;
                 this.cards[exIndex] = cardData; updatedTotal++; 
               } else { 
                 this.cards.push(cardData); insertedTotal++; 
@@ -903,6 +928,7 @@
       startPractice() {
         this.activeDeck = [];
         const dateRangeValue = document.getElementById('filter-date-range').value;
+        const levelValue = document.getElementById('filter-level').value;
         const now = Date.now();
         let timeCutoff = 0;
 
@@ -916,6 +942,11 @@
           const selectedSubs = Array.from(m.querySelectorAll('.sub-cat-cb:checked')).map(cb => cb.value); 
           if (selectedSubs.length > 0) {
             let matches = this.cards.filter(c => c.mainCat === main && selectedSubs.includes(c.subCat || 'algemeen'));
+            
+            if (levelValue !== 'all') {
+              matches = matches.filter(c => (c.level || 'Basic').toLowerCase() === levelValue.toLowerCase());
+            }
+
             if (dateRangeValue !== 'all') {
               matches = matches.filter(c => (c.dateAdded || 0) >= timeCutoff);
             }
@@ -949,6 +980,10 @@
         currentCard.style.transform = '';
         currentCard.classList.remove('flipped');
         currentCard.querySelectorAll('.card-face').forEach(face => face.scrollTop = 0);
+
+        const typeLabel = `${c.subCat || 'algemeen'}${c.level ? ' • ' + c.level : ''}`;
+        document.getElementById('card-type-front').textContent = typeLabel;
+        document.getElementById('card-type-back').textContent = typeLabel;
 
         document.getElementById('progress').textContent = `${this.currentIndex + 1} / ${this.activeDeck.length}`;
         document.getElementById('card-word').textContent = c.word;
